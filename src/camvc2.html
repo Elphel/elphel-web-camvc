@@ -1,0 +1,1440 @@
+<html>
+<!--
+*! -----------------------------------------------------------------------------**
+*! camvc2.html
+*!
+*! Copyright (C) 2005-2008 Elphel, Inc.
+*!
+*! -----------------------------------------------------------------------------**
+*!
+*!  This program is free software: you can redistribute it and/or modify
+*!  it under the terms of the GNU General Public License as published by
+*!  the Free Software Foundation, either version 3 of the License, or
+*!  (at your option) any later version.
+*!
+*!  This program is distributed in the hope that it will be useful,
+*!  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*!  GNU General Public License for more details.
+*!
+*!  You should have received a copy of the GNU General Public License
+*!  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*! -----------------------------------------------------------------------------**
+*!  $Log: camvc2.html,v $
+*!  Revision 1.21  2011/05/30 00:10:28  elphel
+*!  Fixed embedding gecko-mediaplayer. Thanks, Kevin!
+*!
+*!  Revision 1.20  2010/08/01 19:30:24  elphel
+*!  new readonly parameter FRAME_SIZE and it support in the applications
+*!
+*!  Revision 1.19  2010/06/04 01:56:51  elphel
+*!  Initial support for the multi-sensor operation
+*!
+*!  Revision 1.18  2008/12/13 23:39:50  elphel
+*!  support for the SnapFull button
+*!
+*!  Revision 1.17  2008/12/11 07:24:35  elphel
+*!  debug output (commented out anyway)
+*!
+*!  Revision 1.16  2008/12/11 06:37:57  elphel
+*!  Added animated refresh button
+*!
+*!  Revision 1.15  2008/12/10 22:09:37  elphel
+*!  Skipping histogram refresh (and hiding it) when compressor is stopped (fro circbuf navigation)
+*!
+*!  Revision 1.14  2008/12/10 18:38:19  elphel
+*!  Fixed input select element in Konqueror (it would not let to change image resolution)
+*!
+*!  Revision 1.13  2008/12/10 07:24:22  elphel
+*!  removed unused camera communication states
+*!
+*!  Revision 1.12  2008/12/10 03:07:13  elphel
+*!  Using non-linear (stretched near high limit) sliders for autoexposure settings
+*!
+*!  Revision 1.11  2008/12/09 23:35:38  elphel
+*!  Fixed handling Exif image description
+*!
+*!  Revision 1.10  2008/12/09 22:11:56  elphel
+*!  Fixed resizing, changed color/mono checkbox to mode selector
+*!
+*!  Revision 1.9  2008/12/09 19:25:17  elphel
+*!  After disabling default actions onmousedown - enabled all input text fields:  onmousedown="this.select()" (otherwise they did not get focus when clicking them)
+*!
+*!  Revision 1.8  2008/12/09 16:29:54  elphel
+*!  Added event.preventDefault() here and there. Really helped - with the current FF buttons were dragged away like images (before I could only fight it using background images, not the regular ones)
+*!
+*!  Revision 1.7  2008/12/09 07:51:52  elphel
+*!  Partial support of ccam.ftp added alerts on non-yet-ported control tabs. Temporary launches autocampars to save selected parameters fro next autostart
+*!
+*!  Revision 1.6  2008/12/05 08:10:19  elphel
+*!  Fixed work (at least seems so) circbuf+Exif operation
+*!
+*!  Revision 1.5  2008/12/05 03:31:31  elphel
+*!  Multiple changes, some cleanup and working on restoring circbuf/Exif functionality available in 7.1
+*!
+*!  Revision 1.4  2008/12/04 02:24:46  elphel
+*!  Adding/debugging autoexposure controls
+*!
+*!  Revision 1.3  2008/12/02 20:25:46  elphel
+*!  Reduced range of manual color adjustment in auto white balancing
+*!
+*!  Revision 1.2  2008/12/01 07:33:03  elphel
+*!  Added gains, scales, white balance control
+*!
+*!  Revision 1.1.1.1  2008/11/27 20:04:03  elphel
+*!
+*!
+*!  Revision 1.5  2008/11/10 19:55:51  elphel
+*!  8.0.alpha15 - first camvc working with 8.0 (just basic features - no autoexposure, white balance, ...), but it is now really possible (again after it was broken for quite a while) to move sliders and navigator windows without fighting with the camera that tried to move them back
+*!
+*!  Revision 1.4  2008/11/08 23:59:23  elphel
+*!  snapshot
+*!
+*!  Revision 1.3  2008/11/08 05:54:02  elphel
+*!  snapshot - working on camvc
+*!
+*!  Revision 1.2  2008/11/04 00:15:40  elphel
+*!  started to work on porting
+*!
+*!  Revision 1.4  2008/05/01 01:32:05  elphel
+*!  support for the frame number - combining hardware frame counter used by i2c (3-bit) and software one
+*!
+*!  Revision 1.3  2008/04/25 21:32:49  elphel
+*!  added processing of Exif_Photo_ExposureTime
+*!
+*!  Revision 1.2  2008/04/24 18:51:14  elphel
+*!  added navigation through circbuf
+*!
+*!  Revision 1.3  2008/02/08 16:33:52  spectr_rain
+*!  remove FPS doubles
+*!
+*!  Revision 1.2  2007/11/30 19:28:47  spectr_rain
+*!  added wide resolution 1920x1080 & 1280x720
+*!
+*!  Revision 1.1.1.1  2007/10/02 22:25:10  elphel
+*!  This is a fresh tree based on elphel353-2.10
+*!
+*!  Revision 1.10  2007/10/02 22:25:10  elphel
+*!  minor change of the window title
+*!
+*!  Revision 1.9  2007/09/19 17:49:14  elphel
+*!  Frame rate limit mode is read back from the camera, so several hosts can be nice to each other. But the value fro the fps limit is not read back, just flags
+*!
+*!  Revision 1.8  2007/09/19 04:23:21  elphel
+*!  fixed layer visibility, restored DVR buttons
+*!
+-->
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<META http-equiv="PRAGMA" content="NO-CACHE">
+<meta http-equiv="Expires" content="0">
+<!--<link rel="stylesheet" type="text/css" href="elphel_313_style.css"> -->
+<!--.decimation_select {text-align:center;float:left;border:1px solid #ffffff;}
+    .decimation_block {clear:both;border:1px solid #ff0000;}
+.decimation_block1{overflow:auto;border:1px solid #0000ff;}
+-->
+<!--input {  
+   background-color: #ffffff;
+   text-align: right;
+   font-family : sans-serif;
+   font-size: 8pt;
+   font-weight: normal;
+   color: black;
+   display: inline;
+}-->
+
+<style>
+body {
+   font-family : sans-serif;
+   font-size: 8pt;
+   font-weight: normal;
+   color: black;
+   background-color: white;
+   margin-top: 0;
+   margin-right: 0;
+   margin-bottom: 0;
+   margin-left: 0;
+   padding: 0;
+   margin: 0;
+   }
+h1 {
+   font-family: sans-serif;
+   font-size: 13pt;
+   font-weight: normal;
+   color:  black;
+   }
+   
+a {
+text-decoration:none;
+font-family: sans-serif;
+font-weight: bold;
+font-size: 8pt;
+}
+a:link { color: 2f639c } 
+a:visited { color: 2f639c } 
+a:active { color: 389165 } 
+a:hover { color: 389165 }
+input {
+   font-size: 8pt;
+   display: inline;
+}
+
+
+.decimation_select {text-align:center;float:left;border:0;}
+.decimation_block {clear:both;border:0px;}
+.decimation_block1{overflow:auto;border:0px}
+
+.settings_item {float:left; width:250px; padding:2px; border-top:0; border-bottom:1px solid #666666; border-left:1px solid #666666; border-right:1px solid #666666;}
+.settings_table {position:relative;display:table;width:100%; border-top:0; border-bottom:1px solid #666666; border-left:1px solid #666666; border-right:1px solid #666666;display:table;}
+.settings_table_t {position:relative;display:table;width:100%; border-top:1px solid #666666; border-bottom:1px solid #666666; border-left:1px solid #666666; border-right:1px solid #666666;display:table;}
+
+.settings_row {display:table-row; vertical-align: middle;}
+
+.settings_cell{display:table-cell; border-top:0; border-bottom:0; border-left:0; border-right:1px solid #666666; text-align:left; padding: 0px 2px 0px 2px;}
+.settings_cell_nrnb{display:table-cell; border-top:0; border-bottom: 1px solid #666666; border-left:0; border-right:1px solid #666666; text-align:left; padding: 2px 2px 2px 2px;}
+.settings_cell_rnb{display:table-cell; border-top:0; border-bottom: 1px solid #666666; border-left:0; border-right:0; text-align:left; padding: 2px 2px 2px 2px;}
+.settings_cell_nrb{display:table-cell; border-top:0; border-bottom: 0; border-left:0; border-right:1px solid #666666; text-align:left; padding: 2px 2px 2px 2px;}
+.settings_cell_rb{display:table-cell; border-top:0; border-bottom: 0; border-left:0; border-right:0; text-align:left; padding: 2px 2px 2px 2px;}
+.inline_icon {width:25;height:25;display:inline;}
+.float_icon {float:left;}
+.separator {position:relative; height:5}
+
+.test_class    {border:1px solid black;}
+.test_class1   {border:1px solid red;}
+.conf_inp      {text-align:left; font-weight:bold;}
+.conf_inpr     {text-align:right;font-weight:bold;}
+.input_numeric {text-align:right;}
+.input_text    {text-align:left;}
+.input_readonly_text    {text-align:left;background-color:#cccccc;}
+.input_readonly_numeric {text-align:right;background-color:#cccccc;}
+.input_aexp    {text-align:right;color:blue;background-color:#cccc66;}
+
+
+</style>
+<title>Elphel Camera Controls</title>
+<script language="javascript" src="elphelSliders2.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="elphelFrames.js?_TIMESTAMP_" type="text/javascript"></script> 
+<script language="javascript" src="elphelTabs.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="elphelButtons2.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="elphelContextHelp.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="camvc2_i18n.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="camvc_circbuf.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="camvc_camcomm.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="camvc_interface.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="camvc_main.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="camvc_video.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="camvc_configs.js?_TIMESTAMP_" type="text/javascript"></script>
+<script language="javascript" src="camvc_dvr.js?_TIMESTAMP_" type="text/javascript"></script>
+
+</head>
+<body  onload="initOnLoad();" onResize="resizeMainWindow();" onunload="hideStreamPage();" style="background-color: #888888; overflow:hidden;">
+ <div id="idStartup" style="position:absolute; width:100%; height:100%; background-color: #ffffff; z-index:100; cursor:wait;background-image:url(images/elphel_logo256x256.png?_TIMESTAMP_);background-repeat:no-repeat;background-position:center center;"><H1>Loading...</H1>
+ </div>
+
+<!-- <div id="DIV_ALL" style="position:absolute; left:0; top:0;  width:1024; height:768; background-color: #aa6666; overflow:hidden;">-->
+ <div id="DIV_ALL" style="position:absolute; left:0; top:0;  width:1024; height:768; background-color: #aaaaaa; overflow:hidden;">
+<!--   <div id="idVideoViewer_outer" style="display:none;position:absolute;z-index=1;background-color: #aaaaaa;"> Was an error z-index did not work--><!-- z-index >=0 and in new window video is on top -->
+<!--   <div id="idVideoViewer_outer" style="display:none;position:absolute;z-index:1;background-color: #aa6666;">--> <!-- z-index >=0 and in new window video is on top -->
+   <div id="idVideoViewer_outer" style="display:none;position:absolute;z-index:1;background-color: #aa6666;"> <!-- z-index >=0 and in new window video is on top -->
+<!--     <div id="idVideoViewer" style="position:relative;z-index:-1;"> -->
+     <div id="idVideoViewer" style="position:relative;z-index:-1;background-color: #aa6666;"> 
+     </div>
+     <div id="idVideoR" style="display:none; position:fixed; left:260;top:4; font-size:24pt; color:green; z-index:100">R</div>
+     <div id="idVideoRunButtons" style="position:relative;height:25;background-color:#dddddd">
+       <div id="idVideoRunButtonsPlayback">
+         <div id="btnDVRBack_P"          style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+         <div id="btnDVRPlay_P"          style="position:absolute; left:25; top:0;  width:25; height:25;" ></div>
+         <div id="btnDVRPause_P"         style="position:absolute; left:50; top:0;  width:25; height:25;" ></div>
+         <div id="btnDVRStop_P"          style="position:absolute; left:75; top:0;  width:25; height:25;" ></div>
+         <div id="btnDVRForward_P"       style="position:absolute; left:100;top:0;  width:25; height:25;" ></div>
+         <div id="VideoRun_slIder" style="position:absolute;left:125; top:0;  height:25;"></div>
+       </div>  
+       <div id="idVideoRunButtonsLive">
+         <div id="btnDVRRecord_L"        style="position:absolute; left: 0; top:0;  width:25; height:25;" ></div>
+         <div id="btnDVRStopRecord"      style="position:absolute; left:25; top:0;  width:25; height:25;" ></div>
+       </div>  
+     </div>
+   </div>
+<!-- *** Firefox (at least 1.04) does not really shield video plugin even with position:fixed if dimensions are specified in html
+         javascript - OK *** -->
+<!-- seems that background: or background-color in the "idShieldControlsFromPlugin" is needed-->  
+   <div id="idShieldControlsFromPlugin" style="position:fixed;background-color: #888888;z-index:1;"><!-- --></div>
+<!--   <iframe id="idShieldControlsFromPlugin" src="javascript:false"  style="position: absolute; top: 0px; left: 0px; display: none; width: 1200px; height: 400px; z-index: -100; background-color: #6666aa;" frameborder="0" scrolling="no">aaa</iframe>-->
+   <!--<div id="idShieldButtonsFromPlugin" style="position:fixed;width:256;">...</div>-->
+   <div id="idShieldButtonsFromPlugin_0"   style="position:fixed;"><!-- --></div>
+   <div id="idShieldButtonsFromPlugin_25"  style="position:fixed;"><!-- --></div>
+   <div id="idShieldButtonsFromPlugin_50"  style="position:fixed;"><!-- --></div>
+   <div id="idShieldButtonsFromPlugin_75"  style="position:fixed;"><!-- --></div>
+   <div id="idShieldButtonsFromPlugin_100" style="position:fixed;"><!-- --></div>
+   <div id="idShieldButtonsFromPlugin_125" style="position:fixed;"><!-- --></div>
+   <div id="idShieldButtonsFromPlugin_150" style="position:fixed;"><!-- --></div>
+   <div id="idShieldButtonsFromPlugin_175" style="position:fixed;"><!-- --></div>
+   <div id="idShieldButtonsFromPlugin_200" style="position:fixed;"><!-- --></div>
+   <div id="idShieldButtonsFromPlugin_225" style="position:fixed;"><!-- --></div>
+   <div id="idDivCameraImage" style="position:absolute;left:256; top:0;  width:544; height:256;">
+     <img id="idCameraImage" src="images/empty.png?_TIMESTAMP_" style="width:100%;height:100%;z-index:-3" onClick="startRefresh()">
+     <div id="idDivCameraImageCover"  style="position:absolute;left:0; top:0;  width:100%; height:100%;">
+       <img src="images/empty.png?_TIMESTAMP_" style="width:1; height:1">
+     </div>
+     <div id="idMagnifier_frAmesel" style="position:absolute; left:106; top:0;  width:150; height:100;"></div>
+   </div>
+   
+<!-- ============ Menu buttons ======================= --> 
+   <div id="idDivMenu" style="position:absolute; left:0; top:0;  width:256; height:25;  z-index:100">
+     <div id="btnCameraShow"        style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+     <div id="btnStreamersShow"     style="position:absolute; left:25;  top:0;  width:25; height:25;" ></div>
+     <div id="btnMonitorShow"       style="position:absolute; left:50;  top:0;  width:25; height:25;" ></div>
+     <div id="btnDVRShow"           style="position:absolute; left:75;  top:0;  width:25; height:25;" ></div>
+     <div id="btnNetworkShow"       style="position:absolute; left:100; top:0;  width:25; height:25;" ></div>
+     <div id="btnSettingsShow"      style="position:absolute; left:125; top:0;  width:25; height:25;" ></div>
+<!--     <div id="btnInfoShow"        style="position:absolute; left:150;top:0;  width:25; height:25;" ></div>-->
+     <div id="btnSnapFull"        style="position:absolute; left:150;top:0;  width:25; height:25;" ></div>
+     <div id="btnRefresh"         style="position:absolute; left:175;top:0;  width:25; height:25;" ></div>
+     <div id="btnLanguage"        style="position:absolute; left:200;top:0;  width:25; height:25;" ></div>
+     <div id="btnHelpShow"        style="position:absolute; left:225;top:0;  width:25; height:25;" ></div>
+   </div>
+   <div id="idDivCameraMenu" style="position:absolute; left:0; top:25;  width:256; height:25; z-index:100">
+     <div id="btnHistShow"        style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+     <div id="btnBrConShow"       style="position:absolute; left:25; top:0;  width:25; height:25;" ></div>
+     <div id="btnColorShow"       style="position:absolute; left:50; top:0;  width:25; height:25;" ></div>
+     <div id="btnPositioningShow" style="position:absolute; left:75; top:0;  width:25; height:25;" ></div>
+     <div id="btnPhotoShow"       style="position:absolute; left:100;top:0;  width:25; height:25;" ></div>
+     <div id="btnNetworkShow1"     style="position:absolute; left:125;top:0;  width:25; height:25;" ></div>
+     <div id="btnSettingsShow1"    style="position:absolute; left:150;top:0;  width:25; height:25;" ></div>
+   </div>
+<!-- Info Div -->   
+   <div id="idDivInfo" style="position:absolute; left:0; top:0;  width:256;">
+        <span id="idInfoWidth"  style="float:left;font-weight:bold; cursor:pointer;" onclick="released_btnPositioningShow(0);">0</span>
+        <span style="float:left;" onclick="released_btnPositioningShow(0);">&nbsp;x&nbsp;</span>
+        <span id="idInfoHeight" style="float:left;font-weight:bold; cursor:pointer;" onclick="released_btnPositioningShow(0);">0</span>
+        <span id="idInfoAt"     style="float:left;"></span>
+        <span id="idSpanFPS"    style="color:green; float:left;font-weight:bold; cursor:pointer;" onclick="released_btnPhotoShow(3);">00.0</span>
+        <span id="idInfoLabelFPS" style="float:left; cursor:pointer;" onclick="released_btnPhotoShow(3);">fps</span>
+<!--        <span id="idInfoLabelRunning" style="float:left;color:green; font-weight:bold; cursor:pointer;" onclick="released_btnPhotoShow(2);">&nbsp;running</span>
+        <span id="idInfoLabelStopped" style="float:left;color:red; font-weight:bold; cursor:pointer;" onclick="released_btnPhotoShow(2);">&nbsp;stopped</span>-->
+<!--
+        <span id="idInfoLabelRunning" style="float:left;color:green; font-weight:bold; cursor:pointer;" onclick="released_btnPhotoShow(2);"><img
+        src="images/running_25x7.gif?_TIMESTAMP_" style="width:25;height:7"/></span>
+        <span id="idInfoLabelStopped" style="float:left;color:red; font-weight:bold; cursor:pointer;" onclick="released_btnPhotoShow(2);"><img
+        src="images/empty.png?_TIMESTAMP_" style="width:25;height:7"/></span>
+-->
+        <span id="idInfoLabelRunning" style="float:left;color:green; font-weight:bold; cursor:pointer;" onclick="toggleCompressorRun();"><img
+        src="images/running_25x7.gif?_TIMESTAMP_" style="width:25;height:7"/></span>
+        <span id="idInfoLabelStopped" style="float:left;color:red; font-weight:bold; cursor:pointer;" onclick="toggleCompressorRun();"><img
+        src="images/stopped_25x7.png?_TIMESTAMP_" style="width:25;height:7"/></span>
+
+        <span style="float:left;">&nbsp;</span>
+        <span id="idFileSize" style="float:left;">1024K</span>
+
+<!--        <span id="idInfoLabelStrNumber" style="float:left; font-weight:bold; cursor:pointer;" onclick="released_btnPhotoShow(2);">0</span> -->
+        <div id="idRecStat" style="position:absolute; width:5; height:5; left:240; top:2;cursor:pointer;" onclick="showDVR();"><span 
+        id="idRecOff"><img src="images/empty.png?_TIMESTAMP_" style="width:5;height:5;"/></span><span id="idRecOn" style="display:none;"><img src="images/recording_5x5.gif?_TIMESTAMP_" style="width:5;height:5;" /></span></div>
+        
+<!--TODO: Add image file size here too make it work with streamers and static images-->        
+        
+   </div>
+   
+   <div id="idDivInfoPlus" style="position:absolute; left:0; top:0;  width:254;">
+     <div class="settings_table_t">
+       <div id="idSensorType_ALL"   class="settings_row">
+         <div id="idSensorType_LB" class="settings_cell_nrnb" style="width:40%"></div>
+         <div id="idSensorType"    class="settings_cell_rnb" >unknown</div>
+       </div>
+       <div id="idSensorSize_ALL"  class="settings_row">
+         <div id="idSensorSize_LB" class="settings_cell_nrnb"></div>
+         <div  class="settings_cell_rnb" >
+           <span id="idSensorWidth"></span>
+           <span>x</span>
+           <span id="idSensorHeight"></span>
+           <span id="idSensorSize_UN"></span>
+         </div>
+       </div>
+       <div   id="idActualSize_ALL" class="settings_row">
+         <div id="idActualSize_LB"  class="settings_cell_nrnb"></div>
+         <div id="idActualSize"     class="settings_cell_rnb" >
+           <a href="images/empty.png?_TIMESTAMP_" id="idImageLink" target="_blank">
+             <span id="idActualWidth"></span>
+             <span>x</span>
+             <span id="idActualHeight"></span>
+             <span id="idActualSize_UN"></span>
+           </a>
+         </div>
+       </div>
+       <div   id="idAexpInfo_ALL" class="settings_row">
+         <div id="idAexpInfoPercents" class="settings_cell_nrnb">
+           <span id="idAexpInfoPercentsValue" style="font-weight:bold; font-style:italic; color:#000000"><b>--</b></span>%<span id="idAexpInfoPercentsUnits">&nbsp;</span>
+         </div>
+         <div id="AexpInfoLevels"     class="settings_cell_rnb" >
+<!-- &nbsp; trying to prevent "jumping" when the text length in state changes (don't want absolute dimensions        -->
+           <span id="idAexpInfoPercentsUnder" >&nbsp;are under&nbsp;</span><span id="idAexpInfoLevelsValue" style="font-weight:bold; font-style:italic; color:#000000"><b>--</b></span>
+         </div>
+       </div>
+<!-- report here if program is waiting  for the camera to respond -->       
+       <div   id="idCommStat_ALL" class="settings_row">
+         <div id="idCommStat_FreeWait"  class="settings_cell_nrb">
+           <span id="idCommStat_Free"><span id="idCommStat_Free_i18n"></span></span>
+           <span id="idCommStat_Waiting" style="display:none; cursor:pointer;" onclick="ccs_cameraTimeout();"><span id="idCommStat_Waiting_i18n"></span></span>
+         </div>
+         <div id="idCommStatRequest" class="settings_cell_rb" >
+           <span id="idCommStat_None">&nbsp;</span>
+           <span id="idCommStatRequest_active">
+             <span id="idCommStat_Command"   ><span id="idCommStat_Command_i18n"  ></span></span>
+             <span id="idCommStat_Status"    ><span id="idCommStat_Status_i18n"   ></span></span>
+<!--             <span id="idCommStat_AECommand" ><span id="idCommStat_AECommand_i18n"></span></span>
+             <span id="idCommStat_AEStatus"  ><span id="idCommStat_AEStatus_i18n" ></span></span> -->
+             <span id="idCommStat_Image"     ><span id="idCommStat_Image_i18n"></span></span>
+             <span id="idCommStat_Histogram" ><span id="idCommStat_Histogram_i18n"></span></span>
+<!--             <span id="idCommStat_StrCommand"><span id="idCommStat_StrCommand_i18n"></span></span>
+             <span id="idCommStat_StrStatus" ><span id="idCommStat_StrStatus_i18n"></span></span>-->
+             :&nbsp;(<span id="idCommStatTimePassed">0</span>&nbsp;<span id="idCommStatTimePassed_UN"></span>&nbsp;)
+           </span>
+         </div>
+       </div>
+     </div>      
+   </div>
+<!-- end of Info Div -->
+
+<!--            <input type="text" onmousedown="this.select()" id="idDVRStart_TX"  size="18" value="2006-03-02 12:00:00" class="input_text"/>-->
+
+   <div id="idExifInfo" style="position:absolute; left:0; top:0;  width:254;">
+     <div class="settings_table_t">
+       <div id="idImageDescription_ALL"   class="settings_row">
+         <div id="idImageDescription_LB" class="settings_cell_nrnb" style="width:30%">Descr:</div>
+         <div id="idImageDescription"    class="settings_cell_rnb" style="font-style:italic;" onClick="ExifModifyDescription();">
+        </div>
+       </div>
+       <div id="idExifFrameNumber_ALL"   class="settings_row">
+         <div id="idExifFrameNumber_LB" class="settings_cell_nrnb">Frame</div>
+         <div id="idExifFrameNumber"    class="settings_cell_rnb" ></div>
+       </div>
+       <div id="idExifExposure_ALL"   class="settings_row">
+         <div id="idExifExposure_LB" class="settings_cell_nrnb">Exposure</div>
+         <div id="idExifExposure"    class="settings_cell_rnb" ></div>
+       </div>
+       <div id="idTimestamp_ALL"   class="settings_row">
+         <div id="idTimestamp_LB" class="settings_cell_nrnb">Sys. time</div>
+         <div id="idTimestamp"    class="settings_cell_rnb" >XXXX:XX:XX XX:XX:XX.XXXXXX</div>
+       </div>
+       <div id="idGPSTime_ALL"   class="settings_row">
+         <div id="idGPSTime_LB" class="settings_cell_nrnb">GPS time</div>
+         <div id="idGPSTime"    class="settings_cell_rnb" >XXXX:XX:XX XX:XX:XX.XXXXXX</div>
+       </div>
+       <div id="idGPSLatLong_ALL"  class="settings_row">
+         <div id="idGPSLatLong_LB" class="settings_cell_nrnb">Coord</div>
+         <div id="idGPSLatLong"    class="settings_cell_rnb" >XX.XXXXX, -XXX.XXXXX</div>
+       </div>
+       <div id="idGPSAltitudeMode_ALL"  class="settings_row">
+         <div id="idGPSAltitudeMode_LB" class="settings_cell_nrnb">Altitude</div>
+         <div id="idGPSAltitudeMode"    class="settings_cell_rnb" >
+           <span id="idGPSAltitude"></span>
+           <span id="idGPSMode_LB"> Mode:</span>
+           <span id="idGPSMode"></span>
+         </div>
+       </div>
+       <div id="idCompassDirection_ALL"  class="settings_row">
+         <div id="idCompassDirection_LB" class="settings_cell_nrnb">Direction</div>
+         <div id="idCompassDirection"    class="settings_cell_rnb" ></div>
+       </div>
+       <div id="idCompassPitchRoll_ALL"  class="settings_row">
+         <div id="idCompassPitchRoll_LB" class="settings_cell_nrb">Pitch/Roll</div>
+         <div id="idCompassPitchRoll"    class="settings_cell_rb" >
+           <span id="idCompassPitch"></span>
+           <span>/</span>
+           <span id="idCompassRoll"></span>
+         </div>
+       </div>
+
+     </div>      
+   </div>
+<!-- end of Exif Info Div -->
+   <div id="idCircbuf" style="position:absolute; left:0; top:0;  width:254;">
+     <div class="settings_table">
+       <div class="settings_row" style="vertical-align: middle;">
+         <div class="settings_cell_rnb">
+           <div id="btnCircbufPrevFirst"     class="float_icon"></div>
+         </div>
+<!-- -->
+         <div class="settings_cell_rnb">
+           <input type="text" onmousedown="this.select()" id="idCircbufFrameNo_TX"  size="3" value="000" class="input_numeric" style="float:left;" onChange="showCircbufFrame(parseInt(this.value));"/>
+         </div>
+<!-- -->
+         <div class="settings_cell_rnb">
+           <div id="idCircbufSeparator"  style="float:left;">:</div>
+         </div>
+<!--
+         <div class="settings_cell_rnb">
+           <div id="idCircbufNumber"  style="float:left;">123</div>
+         </div>
+-->
+         <div class="settings_cell_rnb">
+           <input type="text" onmousedown="this.select()" id="idCircbufNumber_TX"  size="3" value="000" class="input_readonly_numeric" style="float:left;"/>
+         </div>
+
+         <div class="settings_cell_rnb">
+           <div id="btnCircbufNextLast"      class="float_icon"></div>
+           <div id="btnCircbufRun"       class="float_icon"></div>
+           <div id="btnCircbufSingle"    class="float_icon"></div>
+         </div>
+       </div>
+     </div>
+   </div>
+
+   
+   <div id="idDVRInfo" style="position:absolute; left:0; top:0;  width:254;">
+       <div class="settings_table_t">
+         <div id="idDVRLinkAll"   class="settings_row">
+           <div id="idDVRLink_LB" class="settings_cell_nrnb" style="width:40%"></div>
+           <div                   class="settings_cell_rnb" >
+             <a href="images/empty.png?_TIMESTAMP_" id="idDVRLink_LN" target="_blank"><span id="idDVRFileShortName">---</span></a>
+           </div> 
+         </div>
+         
+         <div id="idDVRFileFormatAll"   class="settings_row">
+           <div id="idDVRFileFormat_LB" class="settings_cell_nrnb" style="width:40%"></div>
+           <div id="idDVRFileFormat"    class="settings_cell_rnb" >---</div>
+         </div>
+         
+         <div id="idDVRFileSizeAll"   class="settings_row">
+           <div id="idDVRFileSize_LB" class="settings_cell_nrnb" style="width:40%"></div>
+           <div class="settings_cell_rnb" ><span id="idDVRFileSize">---</span><span id="idDVRFileSize_UN">-</span></div>
+         </div>
+         
+         <div id="idDVRFrameSizeAll"   class="settings_row">
+           <div id="idDVRFrameSize_LB" class="settings_cell_nrnb" style="width:40%"></div>
+           <div class="settings_cell_rnb" ><span id="idDVRFrameWidth">---</span>x<span id="idDVRFrameHeight">---</span></div>
+         </div>
+         
+         <div id="idDVRFPSAll"   class="settings_row">
+           <div id="idDVRFPS_LB" class="settings_cell_nrnb" style="width:40%"></div>
+           <div class="settings_cell_rnb" ><span id="idDVRFPS">---</span>&nbsp;<span id="idDVRFPS_UN">---</span></div>
+         </div>
+         
+         <div id="idDVRFileStartAll"   class="settings_row">
+           <div id="idDVRFileStart_LB" class="settings_cell_nrnb" style="width:40%"></div>
+           <div id="idDVRFileStart"    class="settings_cell_rnb" >---</div>
+         </div>
+       
+         <div id="idDVRFileEndAll"   class="settings_row">
+           <div id="idDVRFileEnd_LB" class="settings_cell_nrnb" style="width:40%"></div>
+           <div id="idDVRFileEnd"    class="settings_cell_rnb" >---</div>
+         </div>
+       
+         <div id="idDVRFileDurationAll"   class="settings_row">
+           <div id="idDVRFileDuration_LB" class="settings_cell_nrnb" style="width:40%"></div>
+           <div id="idDVRFileDuration"    class="settings_cell_rnb" >---</div>
+         </div>
+         
+         <div id="idDVRFileFramesAll"   class="settings_row">
+           <div id="idDVRFileFrames_LB" class="settings_cell_nrnb" style="width:40%"></div>
+           <div id="idDVRFileFrames"    class="settings_cell_rnb" >---</div>
+         </div>
+       
+         <div id="idDVRFilePositionAll"   class="settings_row">
+           <div id="idDVRFilePosition_LB" class="settings_cell_nrb" style="width:40%"></div>
+           <div id="idDVRFilePosition"    class="settings_cell_rb" >---</div>
+         </div>
+         
+         <div id="idDVRRecordingSinceAll"   class="settings_row">
+           <div id="idDVRRecordingSince_LB" class="settings_cell_nrb" style="width:40%"></div>
+           <div id="idDVRRecordingSince"    class="settings_cell_rb" >---</div>
+         </div>
+       </div>      
+   </div>
+<!-- DVR buttons -->
+   <div id="idDVRButtons"          style="position:absolute; left:0; top:50;  width:256; height:25">
+     <div id="btnDVRBack"          style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+     <div id="btnDVRPlay"          style="position:absolute; left:25; top:0;  width:25; height:25;" ></div>
+     <div id="btnDVRPause"         style="position:absolute; left:50; top:0;  width:25; height:25;" ></div>
+     <div id="btnDVRStop"          style="position:absolute; left:75; top:0;  width:25; height:25;" ></div>
+     <div id="btnDVRForward"       style="position:absolute; left:100;top:0;  width:25; height:25;" ></div>
+     <div id="btnDVRRecord"        style="position:absolute; left:200;top:0;  width:25; height:25;" ></div>
+     <div id="btnDVRSettings"      style="position:absolute; left:225;top:0;  width:25; height:25;" ></div>
+   </div>
+
+   <div id="idDVRSlider"           style="position:absolute; left:0; top:0; width:253; height:25; ">
+      <div id="btnDVRList"         style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+      <div id="idDVRSlider_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+   </div>
+
+   
+   <div id="idDivDVR" style="position:absolute; left:0; top:25; width:256;">
+       <div id="idDVRStartAll" class="settings_item">
+         <span id="idDVRStart_LB" style="float:left;"></span>
+         <div id= "idDVRSearch_BN" style="float:right; width:25;height:25;"></div>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idDVRStart_TX"  size="18" value="2006-03-02 12:00:00" class="input_text"/>
+         </span>        
+       </div>  
+        
+   </div>
+
+   <div id="idDivHist" style="position:absolute; left:0; top:25;  width:256;">
+     <img id="imgHistogram" width="256" height="128" border ="0" src="pnghist.cgi?height=128&sqrt=1&scale=3&average=10&fillz=1&linterpz=1&colors=41" onClick="toggleHistControls();">
+   </div>
+<!-- positioning -->   
+<!--http://www.jakpsatweb.cz/css/css-vertical-center-solution.html Use it to fix for IE later-->   
+   <div id="idWindow" style="position:absolute; left:0; top:25;  width:256;">
+   
+     <div id="idWindow_frAmesel" style="position:absolute; left:94; top:0;  width:162; height:125; background-image:url(images/bgmesh8x8.png?_TIMESTAMP_);">
+     </div>
+     
+     <div id="idWindow_frAmeselT_WH" class="settings_table" style="width:94;">
+       <div class="settings_row">
+         <div id="idWindow_frAmeselT_Width" class="settings_cell_rnb">
+           <div id="idWindow_frAmeselT_Width_BTN" class="float_icon"></div>
+           <input type="text" onmousedown="this.select()" id="idWindow_frAmeselT_TXWidth"  size="5" value="2048" onchange="frAmeselOnTextChange(this.id,'w');" class="input_numeric" onfocus="this.myfocus=true;" onblur="this.myfocus=false;"/>
+           <span id="idWindow_frAmeselT_Width_pxpc" onmouseover="pix2perc1('h');" onmouseout="pix2perc1('o');" onmousedown="pix2perc1('d');" onmouseup="pix2perc1('u');">%</span>
+         </div>
+       </div> 
+       <div class="settings_row">
+         <div id="idWindow_frAmeselT_Height" class="settings_cell_rnb">
+           <div id="idWindow_frAmeselT_Height_BTN" class="float_icon"></div>
+           <input type="text" onmousedown="this.select()" id="idWindow_frAmeselT_TXHeight"  size="5" value="1536" onChange="frAmeselOnTextChange(this.id,'h');" class="input_numeric"  onfocus="this.myfocus=true;" onblur="this.myfocus=false;"/>
+           <span id="idWindow_frAmeselT_Height_pxpc" onmouseover="pix2perc1('h');" onmouseout="pix2perc1('o');" onmousedown="pix2perc1('d');" onmouseup="pix2perc1('u');"  style="cursor:pointer;">%</span>
+        </div>
+       </div>  
+       <div class="settings_row">
+         <div id="idWindow_frAmeselT_Left" class="settings_cell_rnb">
+           <div id="idWindow_frAmeselT_Left_BTN" class="float_icon"></div>
+           <input type="text" onmousedown="this.select()" id="idWindow_frAmeselT_TXLeft"  size="5" value="0" onChange="frAmeselOnTextChange(this.id,'l');" class="input_numeric" onfocus="this.myfocus=true;" onblur="this.myfocus=false;"/>
+           <span id="idWindow_frAmeselT_Left_pxpc" onmouseover="pix2perc1('h');" onmouseout="pix2perc1('o');" onmousedown="pix2perc1('d');" onmouseup="pix2perc1('u');" style="cursor:pointer;">%</span>
+         </div>
+       </div>  
+       <div class="settings_row">
+        <div id="idWindow_frAmeselT_Top" class="settings_cell_rb">
+           <div id="idWindow_frAmeselT_Top_BTN" class="float_icon"></div>
+           <input type="text" onmousedown="this.select()" id="idWindow_frAmeselT_TXTop"  size="5" value="0" onChange="frAmeselOnTextChange(this.id,'t');" class="input_numeric" onfocus="this.myfocus=true;" onblur="this.myfocus=false;"/>
+           <span id="idWindow_frAmeselT_Top_pxpc" onmouseover="pix2perc1('h');" onmouseout="pix2perc1('o');" onmousedown="pix2perc1('d');" onmouseup="pix2perc1('u');" style="cursor:pointer;">%</span>
+         </div>
+       </div>
+      </div>
+ <!--  class="input_numeric"/ -->    
+      <div id="idAexp_frAmeselT_WH" class="settings_table" style="width:94;">
+       <div class="settings_row">
+        <div id="idAexp_frAmeselT_Width" class="settings_cell_rnb">
+         <div id="idAexp_frAmeselT_Width_BTN" class="float_icon"></div>
+         <input type="text" onmousedown="this.select()" id="idAexp_frAmeselT_TXWidth"  size="5" value="2048" onchange="frAmeselOnTextChange(this.id,'w');" class="input_aexp" onfocus="this.myfocus=true;" onblur="this.myfocus=false;"/>
+         <span id="idAexp_frAmeselT_Width_pxpc" onmouseover="pix2perc1('h');" onmouseout="pix2perc1('o');" onmousedown="pix2perc1('d');" onmouseup="pix2perc1('u');" style="cursor:pointer;">%</span>
+        </div>
+       </div>
+       
+       <div class="settings_row">
+        <div id="idAexp_frAmeselT_Height" class="settings_cell_rnb" >
+         <div id="idAexp_frAmeselT_Height_BTN" class="float_icon"></div>
+         <input type="text" onmousedown="this.select()" id="idAexp_frAmeselT_TXHeight"  size="5" value="1536" onChange="frAmeselOnTextChange(this.id,'h');" class="input_aexp" onfocus="this.myfocus=true;" onblur="this.myfocus=false;"/>
+         <span id="idAexp_frAmeselT_Height_pxpc" onmouseover="pix2perc1('h');" onmouseout="pix2perc1('o');" onmousedown="pix2perc1('d');" onmouseup="pix2perc1('u');" style="cursor:pointer;">%</span>
+        </div>
+       </div>
+       
+       <div class="settings_row">
+        <div id="idAexp_frAmeselT_Left" class="settings_cell_rnb">
+         <div id="idAexp_frAmeselT_Left_BTN" class="float_icon"></div>
+         <input type="text" onmousedown="this.select()" id="idAexp_frAmeselT_TXLeft"  size="5" value="0" onChange="frAmeselOnTextChange(this.id,'l');" class="input_aexp" onfocus="this.myfocus=true;" onblur="this.myfocus=false;"/>
+         <span id="idAexp_frAmeselT_Left_pxpc" onmouseover="pix2perc1('h');" onmouseout="pix2perc1('o');" onmousedown="pix2perc1('d');" onmouseup="pix2perc1('u');" style="cursor:pointer;">%</span>
+        </div>
+       </div>
+       
+       <div class="settings_row">
+        <div id="idAexp_frAmeselT_Top" class="settings_cell_rb">
+         <div id="idAexp_frAmeselT_Top_BTN" class="float_icon"></div>
+         <input type="text" onmousedown="this.select()" id="idAexp_frAmeselT_TXTop"  size="5" value="0" onChange="frAmeselOnTextChange(this.id,'t');" class="input_aexp" onfocus="this.myfocus=true;" onblur="this.myfocus=false;"/>
+         <span id="idAexp_frAmeselT_Top_pxpc" onmouseover="pix2perc1('h');" onmouseout="pix2perc1('o');" onmousedown="pix2perc1('d');" onmouseup="pix2perc1('u');" style="cursor:pointer;">%</span>
+        </div>
+       </div>
+      </div>  
+
+     
+     
+          
+       
+      <div class="settings_table" style="width:100%;">
+       <div id="idWindow_frAmeselT_U" class="settings_row">
+         <div id="ImageResolution" class="settings_cell_rb">
+           <select name="ImageSize" id="idImageSize" onchange="updateFromSizeSelector(this.id);">
+            <option id="ImageSizeCustom" value="custom">custom</option>
+            <option id="ImageSizeFull" value="full window">full window</option>
+             <option value="2592x1936">2592x1936</option>
+             <option value="2048x1536">2048x1536</option>
+             <option value="1920x1088">1920x1088</option>
+             <option value="1600x1200">1600x1200</option>
+             <option value="1280x1024">1280x1024</option>
+             <option value="1280x720">1280x720</option>
+             <option value="1024x768">1024x768</option>
+             <option value="800x600">800x600</option>
+             <option value="640x480">640x480</option>
+             <option value="320x240">320x240</option>
+           </select>
+           <span id="idWindow_frAmeselT_moreLess" onmouseover="moreLess(this.id,'h');" onmouseout="moreLess(this.id,'o');" onmousedown="moreLess(this.id,'d');" onmouseup="moreLess(this.id,'u');" style="cursor:pointer;">
+             <span id="idWindow_frAmeselT_more" style="cursor:pointer;"></span>
+             <span id="idWindow_frAmeselT_less" style="cursor:pointer;"></span>
+           </span>
+         </div>
+       </div>
+       <div id="idAexp_frAmeselT_U" class="settings_row">
+         <div id="idAexp_frAmeselT_Units" class="settings_cell_nrb"   style="height:25;">
+           <span id="idAexp_frAmeselT_moreLess" onmouseover="moreLess(this.id,'h');" onmouseout="moreLess(this.id,'o');" onmousedown="moreLess(this.id,'d');" onmouseup="moreLess(this.id,'u');" style="cursor:pointer;">
+             <span id="idAexp_frAmeselT_more" style="cursor:pointer;"></span>
+             <span id="idAexp_frAmeselT_less" style="cursor:pointer;"></span>
+           </span>
+         </div>
+       </div>
+      </div>
+    
+   
+   </div>
+   
+   <!--
+ -->    
+     
+ 
+<!-- end of positioning -->   
+
+<!-- histogram controls -->   
+<!--  <div id="idDivHistControl" style="display:none; position:absolute; left:0; top:281;  width:256; "><form>
+     </div>-->
+
+<!-- end of Histogram Controls  -->
+<!-- Video Control -->
+
+   <div id="idDivVideo" style="display:none; position:absolute; left:0; top:0;  width:256;">
+       <div id="idVideoRunAll" class="settings_item">
+         <span id="idVideoRun_LB" style="float:left;"></span>
+         <div id="idVideoRun_CB" style=" width:25; height:25;float:right;" ></div>
+       </div> 
+<!--        
+       <div id="idVideoViewAll" class="settings_item">
+         <span id="idVideoView_LB" style="float:left;"></span>
+         <div id="idVideoView_CB" style=" width:25; height:25;float:right;" ></div>
+       </div>  
+-->       
+       <div id="idVideoLimitFPSAll" class="settings_item">
+         <span id="idVideoLimitFPS_LB" style="float:left;"></span>
+         <div id="idVideoLimitFPS_CB" style=" width:25; height:25;float:right;" ></div>
+       </div>  
+        <div id="idVideoFPSLimitAll" class="settings_item">
+         <span id="idVideoFPSLimit_LB" style="float:left;"></span>
+         <span style="float:right">
+           <input id="idVideoFPSLimit_TX" type="text" size="5" maxlength="5" value="30" onChange="updateFPSLimit();" class="input_numeric"/>
+           <span id="idVideoFPSLimit_UN">fps</span>
+         </span>  
+       </div>  
+       <div id="idVideoMaintainFPSAll" class="settings_item">
+         <span id="idVideoMaintainFPS_LB" style="float:left;"></span>
+         <div id="idVideoMaintainFPS_CB" style=" width:25; height:25;float:right;" ></div>
+       </div>  
+
+      
+           <span id="idDivVideo_moreLess" onmouseover="moreLess(this.id,'h');" onmouseout="moreLess(this.id,'o');" onmousedown="moreLess(this.id,'d');" onmouseup="moreLess(this.id,'u');" style="cursor:pointer;">
+             <span id="idDivVideo_more"></span>
+             <span id="idDivVideo_less"></span>
+           </span>
+      
+   </div> 
+<!--   
+   <div id="idDivVideoControl" style="display:none; position:absolute; left:0; top:0;  width:256; height:100;">
+      Nothing here yet - will be streamer control
+   </div> 
+-->   
+   
+   <div id="idDivWebcamControl" style="position:absolute; left:0; top:0;  width:256; height:200; ">
+     <div id="idNetworkTabs" style="position:absolute; left:0; top:0;  width:256; height:24; "></div>
+     <div id="idNetworkTabs_div1" style="position:absolute; left:0; top:24;  width:256;">
+<!--  <input id="idNetworkTabs_div1_autofill" type="hidden" value="autofillWebCam();"/> -->
+       <div id="idNetworkTabs_div1_head" class="settings_item">
+         <div id="idNetworkTabs_div1_LB" style="float:left;">Network Settings</div>
+       </div>  
+     </div>
+     <div id="idNetworkTabs_div2" style="position:absolute; left:0; top:24;  width:256;">
+       <div id="idNetworkTabs_div2_head" class="settings_item">
+         <div id="idNetworkTabs_div2_LB" style="float:left;">Remote FTP Server</div>
+       </div>
+     </div>
+     <div id="idNetworkTabs_div3" style="position:absolute; left:0; top:24;  width:256;">
+       <input id="idNetworkTabs_div3_autofill" type="hidden" value="autofillWebCam();"/>
+       <div id="idNetworkTabs_div3_head" class="settings_item">
+         <div id="idNetworkTabs_div3_LB" style="float:left;">Webcam Settings</div>
+       </div>
+     </div>
+     <div id="idNetworkTabs_div4" style="position:absolute; left:0; top:24;  width:256;">
+       <input id="idNetworkTabs_div4_autofill" type="hidden" value="autofillWebCamAexp();"/>
+       <div id="idNetworkTabs_div4_head" class="settings_item">
+         <div id="idNetworkTabs_div4_LB" style="float:left;">Webcam Autoexposure</div>
+       </div>
+     </div>
+   </div>
+   
+<!-- end of Webcam Control -->
+<!-- Help -->
+<!--   <div id="idDivHelp" style="display:none; position:absolute; left:0; top:0;  width:256; height:100; background-color: #ddddbb; font-size:14px;">-->
+   <div id="idDivHelp" style="display:none; position:absolute; left:0; top:0;  width:256;">
+     <span id="idHelp">
+     No help yet
+     </span>
+   </div>
+<!-- end of Help -->
+
+<!-- Help-license -->
+<!--   <div id="idDivLicense" style="display:none; position:absolute; left:0; top:0;  width:256; height:410; background-color: #ddddbb; font-size:14px;">-->
+   <div id="idDivLicense" style="display:none; position:absolute; left:0; top:0;  width:256;" onresize="showWindow();">
+      <span id="idDivLicense_TX"></span>
+   </div>
+<!-- end of Help-license -->
+<!-- Geometry Controls -->
+   <div id="idDivGeometry" style="display:none; position:absolute; left:0; top:0;  width:256; background-color: #bbdddd; font-size:14px;"><form>
+    nothing here now
+   </div>
+<!-- end of Geometry Controls -->
+   
+<!-- Exposure+gamma -->
+   <div id="idDivExposGamma" style="position:absolute; left:0; top:281; width:256; height:75; background-color: #ff00ff">
+      <div id="exposure" style="position:absolute; left:0; top:0; width:254; height:25;">
+        <div id="exposure_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="exposure_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div>
+      <div id="gamma"    style="position:absolute; left:0; top:25; width:254; height:25;">
+        <div id="gamma_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="gamma_slIder"    style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div>
+      <div id="blackLev"    style="position:absolute; left:0; top:50; width:254; height:25;">
+        <div id="blackLev_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="blackLev_slIder"    style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div>
+   </div>
+<!-- end of Exposure+gamma -->
+<!--/*
+  {id:"idDivColors",       opt:"C",      bg:"ffffff",         dspl:1,hoverSize: 19,crossSize:9,hoverURL:"images/close_cross_dim_19x19.png?_TIMESTAMP_",crossURL:"images/close_cross_9x9.png?_TIMESTAMP_",callback:"showWindow();"},
+  {id:"idDivWB",         opt:"C",      bg:"ffffff",         dspl:1,hoverSize: 19,crossSize:9,hoverURL:"images/close_cross_dim_19x19.png?_TIMESTAMP_",crossURL:"images/close_cross_9x9.png?_TIMESTAMP_",callback:"showWindow();"},
+  {id:"idDivGains",       opt:"C",      bg:"ffffff",         dspl:1,hoverSize: 
+*/-->
+
+
+<!-- Colors -->
+   <div id="idDivColors" style="position:absolute; left:0; top:341;  width:256; height:25; background-color: #00ffff">
+      <div id="gainGreen" style="position:absolute; left:0; top:0; width:254; height:25;">
+        <div id="gainGreen_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="gainGreen_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div>
+   </div>
+<!-- end of Colors -->
+<!-- White balance correction -->
+
+   <div id="idDivWB" style="position:absolute; left:0; top:341;  width:256; height:50; background-color: #00ffff">
+      <div id="autoRed2Green" style="position:absolute; left:0; top:0; width:254; height:25;">
+        <div id="autoRed2Green_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="autoRed2Green_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div> 
+      <div id="autoBlue2Green" style="position:absolute; left:0; top:25; width:254; height:25;">
+        <div id="autoBlue2Green_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="autoBlue2Green_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div>  
+   </div>
+<!-- end of White balance correction -->
+<!-- Gains/Scales -->
+   <div id="idDivGains" style="position:absolute; left:0; top:341;  width:256; height:50; background-color: #00ffff">
+      <div id="gainRed" style="position:absolute; left:0; top:0; width:254; height:25;display:none;">
+        <div id="gainRed_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="gainRed_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div>
+      <div id="gainRed2Green" style="position:absolute; left:0; top: 0; width:254; height:25;">
+        <div id="gainRed2Green_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="gainRed2Green_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div> 
+      <div id="gainBlue" style="position:absolute; left:0; top:25; width:254; height:25;display:none;">
+        <div id="gainBlue_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="gainBlue_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div>
+      <div id="gainBlue2Green" style="position:absolute; left:0; top:25; width:254; height:25;">
+        <div id="gainBlue2Green_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="gainBlue2Green_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div>
+   </div>
+<!-- end of Gains/Scales -->
+
+<!-- ColorSat -->
+   <div id="idDivColorSat" style="position:absolute; left:0; top:341;  width:256; height:50; background-color: #00ffff">
+      <div id="colorSat" style="position:absolute; left:0; top:0; width:254; height:25;">
+        <div id="colorSat_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="colorSat_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div>  
+      <div id="colorDiffSat" style="position:absolute; left:0; top:25; width:254; height:25;">
+        <div id="colorDiffSat_button"  style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>
+        <div id="colorDiffSat_slIder" style="position:absolute; left:25; top:0; width:229; height:25;"></div>
+      </div> 
+   </div>   
+<!-- end of ColorSat -->
+
+
+<!-- white balance -->
+  <div id="idWhiteBalance" style="display:none; position:absolute; left:0; top:341;  width:256; height:100;">
+  <!-- -->
+  </div>
+<!-- end of white balance -->
+
+<!--  <div id="idDivSettings" style="display:none; position:absolute; left:0; top:0;  width:256; height:200; ">  -->
+   <div id="idDivSettings" style="position:absolute; left:0; top:0;  width:256; height:200; ">
+     <div id="idSettingsTabs" style="position:absolute; left:0; top:0;  width:256; height:24; "></div>
+     <div id="idSettingsTabs_div1" style="position:absolute; left:0; top:24;  width:256;">
+     
+       <div id="idDVRServerAll" class="settings_item">
+         <span id="idDVRServer_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idDVRServer_TX"  size="15" value="" class="input_text" onchange="dvrServerIpChanged();"/>:<input
+                   type="text" id="idDVRServerPort_TX"  size="5" value="" class="input_text" onchange="dvrServerIpChanged();"/> <!-- 8025 -->
+         </span>        
+       </div>  
+       <div id="idDVRCameraIDAll" class="settings_item">
+         <span id="idDVRCameraID_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input readonly type="text" id="idDVRCameraID_TX"  size="15" value="" class="input_readonly_text"/>
+         </span>        
+       </div>  
+       <div id="idDVRCameraIP1All" class="settings_item">
+         <span id="idDVRCameraIP1_LB" style="float:left;"></span>
+         <span style="float:right;">
+<!--            <input disabled type="text" id="idDVRCameraIP1_TX"  size="15" value="" class="input_text"/>:<input
+                   disabled type="label" id="idDVRCameraIP1Port_TX"  size="5" value="" class="input_text"/> -->
+            <input readonly type="text" id="idDVRCameraIP1_TX"  size="15" value="" class="input_readonly_text"/>
+         </span>        
+       </div>  
+       <div id="idDVRCameraIP2All" class="settings_item">
+         <span id="idDVRCameraIP2_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input readonly type="text" id="idDVRCameraIP2_TX"  size="15" value="" class="input_readonly_text"/>:<input
+                   readonly type="text" id="idDVRCameraIP2Port_TX"  size="5" value="" class="input_readonly_text"/>
+         </span>        
+       </div>
+       <div id="idDVRMaxFileSizeAll" class="settings_item">
+         <span id="idDVRMaxFileSize_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idDVRMaxFileSize_TX"  size="4" value="" class="input_numeric"/>&nbsp;<span id="idDVRMaxFileSize_UN"></span>
+         </span>        
+       </div>
+       <div id="idDVRMaxFileDurationAll" class="settings_item" style="display:none;">
+         <span id="idDVRMaxFileDuration_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idDVRMaxFileDuration_TX"  size="4" value="" class="input_numeric"/>&nbsp;<span id="idDVRMaxFileDuration_UN"></span>
+         </span>        
+       </div>
+
+       
+                
+       <div id="idDVRLocationAll" class="settings_item">
+         <span id="idDVRLocation_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idDVRLocation_TX"  size="20" value="" class="input_text"/>
+         </span>        
+       </div>
+       <div id="idDVRRegisterAll" class="settings_item">
+         <span id="idDVRRegister_LB" style="float:left;"></span>
+         <div id= "idDVRRegister_BN" style="float:right; width:25;height:25;"></div>
+       </div>  
+       <div id="idDVRLoopAll" class="settings_item">
+         <span id="idDVRLoop_LB" style="float:left;"></span>
+         <div id= "idDVRLoop_CB" style="float:right; width:25;height:25;"></div>
+       </div>  
+       <div id="idDVRNextPlayAll" class="settings_item">
+         <span id="idDVRNextPlay_LB" style="float:left;"></span>
+         <div id= "idDVRNextPlay_CB" style="float:right; width:25;height:25;"></div>
+       </div>  
+       <div id="idDVRSoftwareAll" class="settings_item">
+         <span id="idDVRSoftware_LB" style="float:left;"></span>&nbsp;<a href="#" id= "idDVRSoftware" target="_blank">DVR software</a>
+       </div>  
+       <div id="idDVRSliderDelayAll" class="settings_item">
+         <span id="idDVRSliderDelay_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idDVRSliderDelay_TX"  size="4" value="500" class="input_numeric"/><span id="idDVRSliderDelay_UN"></span>
+         </span>        
+       </div>
+
+<!--          <div id="btnHistShow"        style="position:absolute; left:0;  top:0;  width:25; height:25;" ></div>-->
+    <!--   <span>This is Tab1 </span>-->
+     </div>
+     <div id="idSettingsTabs_div2" style="position:absolute; left:0; top:24;  width:256;">
+       <div id="idTranslucencyAll" class="settings_item"> 
+         <span id="idTranslucency" style="float:left;">Translucency</span>
+         <div id="btnTransl100" style="float:right; width:25; height:25;" ></div>
+         <div id="btnTransl75"  style="float:right; width:25; height:25;" ></div>
+         <div id="btnTransl50"  style="float:right; width:25; height:25;" ></div>
+         <div id="btnTransl25"  style="float:right; width:25; height:25;" ></div>
+         <div id="btnTransl0"   style="float:right; width:25; height:25;" ></div>
+         <div id="btnTranslNo"  style="float:right; width:25; height:25;" ></div>
+       </div>  
+       <div id="idDisplayTypeAll" class="settings_item"> 
+         <span id="idDisplayType_LB" style="float:left;">Translucency</span>
+         <div id="btnDisplayVideo"  style="float:right; width:25; height:25;" ></div>
+         <div id="btnDisplayStill"  style="float:right; width:25; height:25;" ></div>
+         <div id="btnDisplayNone"   style="float:right; width:25; height:25;" ></div>
+       </div>  
+       <div id="idFPSReduceAll" class="settings_item">
+         <span id="idFPSReduce_LB" style="float:left;"></span>
+         <span style="float:right;">1/<input type="text" onmousedown="this.select()" id="idFPSReduce_TX"  size="1" value="1" class="input_numeric" onchange="fpsReduceChanged();"/></span>        
+       </div>  
+       <div id="idEnableImageRefresh" class="settings_item">
+         <div id="idEnableImageRefresh_SP" style="float:left;">
+           <span id="idEnableImageRefresh_LB" style="float:left;"></span>
+           <div  id="idEnableImageRefresh_CB" style="float:left; width:25; height:25;" ></div>
+         </div>  
+         <div id="idEnableImageRefreshFor_SP" style="float:left;">
+           <span id="idEnableImageRefreshFor_LB" style="float:left;"></span>
+           <input type="text" onmousedown="this.select()" id="idEnableImageRefreshFor_TX"  size="3" value="10" class="input_numeric" style="float:left;"
+                  onchange="gRequests.refreshDuration=Math.round(parseFloat(document.getElementById(this.id).value)*1000);startRefresh();"/>
+           <span id="idEnableImageRefreshSec_LB" style="float:left;"></span>
+         </div>  
+       </div>  
+       <div id="idMagnifier" class="settings_item" style="position:relative; height:25;">
+         <div id="btnMagnifierNo"        style="position:absolute; left:0;top:0; width:25; height:25;" ></div>
+         <div id="btnMagnifierFrameless" style="position:absolute; left:25;top:0; width:25; height:25;" ></div>
+         <div id="btnMagnifierFramed"    style="position:absolute; left:50;top:0; width:25; height:25;" ></div>
+         <div id="MagnifierZoom_slIder" style="position:absolute; left:75;top:0; width:175; height:25;" ></div>
+       </div>  
+     </div>
+
+     
+          
+     <div id="idSettingsTabs_div3" style="position:absolute; left:0; top:24;  width:256;">
+        <div id="idSettingsTabs_div3_head" class="settings_item">
+         <div id="idSettingsTabs_div3_LB" style="float:left;">Network Settings</div>
+       </div>  
+     </div>
+     
+
+     
+          
+     <div id="idSettingsTabs_div4" style="position:absolute; left:0; top:24;  width:256;">
+
+      <div class="settings_table">
+       <div class="settings_row">
+        <div id="idAexp_LBALL" class="settings_cell_rnb">
+          <div id="idAexpOn_CB" style="float:left; width:25; height:25;"></div>
+          <div id="idAexp_LB"></div>
+        </div>
+       </div>
+      
+       <div class="settings_row">
+         <div id="idAexpLevels" class="settings_cell_rnb" style="position:relative; width:256;height:25;">
+           <div id="idAexpLevels_LBTN" style="float:left; width:25; height:25;"></div>
+           <div id="idAexpLevels_slIder" style="position:absolute; left:30; width:225;height:25;"></div>
+         </div> 
+       </div>
+       <div class="settings_row">
+         <div id="idAexpPercents" class="settings_cell_rnb" style="position:relative; width:256;height:25;">
+           <div id="idAexpPercents_LBTN" style="float:left; width:25; height:25;"></div>
+           <div id="idAexpPercents_slIder" style="position:absolute; left:30; width:225;height:25;"></div>
+         </div> 
+       </div>
+       <div class="settings_row">
+         <div id="idAexpMonitor" class="settings_cell_rb" style="position:relative; width:256;height:25;">
+           <div id="idAexpMonitor_LBTN" style="float:left; width:25; height:25;"></div>
+           <div id="idAexpMonitor_slIder" style="position:absolute; left:30; width:225;height:25;"></div>
+         </div> 
+       </div>
+       
+       
+      </div><!-- table -->
+      <div id="idMaxAndOverExpos" class="settings_table" style="width:256">
+        <div id="idAexpMaxExpos" class="settings_row">
+          <div class="settings_cell_rnb">
+            <span id="idAexpMaxExpos_LB" style="float:left;">Maximal exposure</span>
+            <span id="idAexpMaxExpos_TXUN"  style="white-space: nowrap; float:right">
+              <input id="idAEMax" type="text" size="8" maxlength="8" value="1000" onChange="setAEMax();" class="input_numeric"/>
+              <span id="idAEMax_UN">ms</span>
+            </span>
+          </div>  
+        </div>
+
+        <div id="idAexpOverExp" class="settings_row" style="display:none" > <!-- will be removed later as it is not used anymore -->
+          <div class="settings_cell_rnb">
+            <span id="idAexpOverExp_LB" >Maximal overexposed pixels</span>
+<!--            <span id="idAexpMaxExpos_TXUN" style="white-space: nowrap; float:right">-->
+            <div id="idAexpMaxExpos_TXUN" style="float:right">
+<!--            <span id="idAexpMaxExpos_TXUN" style="white-space: nowrap; float:right">-->
+              <input id="idAEOExp" type="text"  size="8" maxlength="8" value="0.5" onChange="setAEParameters();" class="input_numeric"/>
+              <span>%</span>
+            </div>  
+          </div>  
+        </div>
+        <div  class="settings_row">
+          <div class="settings_cell_rb" style="vertical-align: middle;">
+<!--           <span id="idShowAexpFrameMain" style="border:1px solid black;"></span>
+           <span id="idShowAexpFrameNavigator" style="border:1px solid yellow;"></span> -->
+            <div id="idShowAexpFrameMain_LB" style="float:left;">Show selection</div>
+            <div id="idShowAexpFrameMain_CB" style="float:left; width:25; height:25;"></div>
+            <div id="idShowAexpFrameNavigator_CB" style="float:right;"> </div>
+            <div id="idShowAexpFrameNavigator_LB" style="float:right;vertical-align: middle;">Show selection</div>
+          </div>
+        </div>
+      </div>
+      
+     </div> 
+     
+     
+          
+     <div id="idSettingsTabs_div5" style="position:absolute; left:0; top:24;  width:256; ">
+       <div class="settings_table">
+         <div class="settings_row" >
+           <div id="idQuality_ALL" class="settings_cell_rnb"  style="position:relative; width:256;">
+             <div id="idQuality_LB"   style="float:left; left:0;top:0; width:100;" ></div>
+             <div style="float:right">
+               <div id="Quality_slIder" style="position:relative;width:150; height:25;" ></div></div></div></div>
+         <div id="idFlip_ALL" class="settings_row">
+           <div id="idFlip_ALL" class="settings_cell_rb">
+           <div id="idFlipHor_ALL" style="float:left;" > 
+             <div id="idFlipHor_LBTN" class="float_icon"></div>
+             <div id="idFlipHor_CB"   class="float_icon"></div>
+            </div>
+            <div id="idFlipVert_ALL"  style="float:left;"> 
+             <div id="idFlipVert_LBTN" class="float_icon"></div>
+             <div id="idFlipVert_CB" class="float_icon"></div>
+            </div>   
+<!--
+            <div id="idColor_ALL"  style="float:left;"> 
+             <div id="idColor_LBTN" class="float_icon"></div>
+             <div id="idColor_CB" class="float_icon"></div>
+            </div>
+-->
+            <div id="idColor_ALL"  style="float:right;"> 
+             <div id="idColor_LBTN" class="float_icon"></div>
+             <select name="ColorSelect" id="idColorSelect" onchange="updateColor();">
+               <option value="0">mono</option>
+               <option value="1">color</option>
+               <option value="2">jp46</option>
+               <option value="3">jp46dc</option>
+<!--               <option value="4">color20</option>-->
+               <option value="5">jp4</option>
+               <option value="6">jp4dc</option>
+               <option value="7">jp4diff</option>
+               <option value="8">jp4hdr</option>
+               <option value="9">jp4diff2</option>
+               <option value="8">jp4hdr2</option>
+               <option value="8">mono4</option>
+             </select>
+            </div>
+
+<!--
+
+               0 - mono6, monochrome (color YCbCr 4:2:0 with zeroed out color componets)`
+               1 - color, YCbCr 4:2:0, 3x3 pixels`
+               2 - jp46 - original jp4, encoded as 4:2:0 with zeroed color components`
+               3 - jp46dc, modified jp46 so each color component uses individual DC diffenential encoding`
+               4 - reserved for color with 5x5 conversion (not yet implemented)`
+               5 - jp4 with ommitted color components (4:0:0)`
+               6 - jp4dc, similar to jp46dc encoded as 4:0:0`
+               7 - jp4diff, differential where (R-G), G, (G2-G) and (B-G) components are encoded as 4:0:0`
+               8 - jp4hdr, (R-G), G, G2,(B-G) are encoded so G2 can be used with high gain`
+               9 - jp4diff2, (R-G)/2, G,(G2-G)/2, (B-G)/2 to avoid possible overflow in compressed values`
+              10 - jp4hdr2, (R-G)/2, G,G2,(B-G)/2`
+              14 - mono,  monochrome with ommitted color components (4:0:0)"</COLOR>
+-->
+<!--
+            <div id="id_ALL" style="float:right;">
+             <div id="idIgnoreStreamer_LB" class="float_icon"></div>
+             <div id="idIgnoreStreamer_CB" class="float_icon"></div>
+            </div> 
+-->
+           </div>  
+         </div>
+       </div>
+
+       <div class="settings_table">
+
+<!--MultiSensor -->
+
+         <div class="settings_row">
+           <div id="idMultiSensor_LB" class="settings_cell_rb">
+           </div>
+         </div>
+         <div class="settings_row">
+           <div id="idMultiSensor1" class="settings_cell_rnb">
+<!-- formatting below is intentional - to avoid white spaces outside the tags -->
+             <span id="idMultiSensor10_out"><span id="idMultiSensor10"
+             >&nbsp;&nbsp;&nbsp;</span></span><span id="idMultiSensor11_out"><span id="idMultiSensor11"
+             >1</span></span><span id="idMultiSensor12_out"><span id="idMultiSensor12"
+             >2</span></span><span id="idMultiSensor13_out"><span id="idMultiSensor13"
+             >3</span></span>
+           </div>
+         </div>
+         <div class="settings_row">
+           <div id="idMultiSensor2" class="settings_cell_rnb">
+             <span id="idMultiSensor20_out"><span id="idMultiSensor20"
+             >X</span></span><span id="idMultiSensor21_out"><span id="idMultiSensor21"
+             >1</span></span><span id="idMultiSensor22_out"><span id="idMultiSensor22"
+             >2</span></span><span id="idMultiSensor23_out"><span id="idMultiSensor23"
+             >3</span></span>
+           </div>
+           <div id="idMultiSensorMode" class="settings_cell_rnb">
+             <span id="idMultiSensorModeM_out"><span id="idMultiSensorModeM"
+             >M</span></span><span id="idMultiSensorMode1_out"><span id="idMultiSensorMode1"
+             >1</span></span><span id="idMultiSensorMode2_out"><span id="idMultiSensorMode2"
+             >2</span></span><span id="idMultiSensorMode3_out"><span id="idMultiSensorMode3"
+             >3</span></span>
+           </div>
+         </div>
+         <div class="settings_row">
+           <div id="idMultiSensor3" class="settings_cell_rnb">
+             <span id="idMultiSensor30_out"><span id="idMultiSensor30"
+             >X</span></span><span id="idMultiSensor31_out"><span id="idMultiSensor31"
+             >1</span></span><span id="idMultiSensor32_out"><span id="idMultiSensor32"
+             >2</span></span><span id="idMultiSensor33_out"><span id="idMultiSensor33"
+             >3</span></span>
+           </div>
+         </div>
+
+<!--/MultiSensor -->
+
+         <div class="settings_row">
+           <div id="idDCMhor_LB" class="settings_cell_rb">
+           </div>
+         </div>
+         <div class="settings_row">
+           <div id="idDCMhor" class="settings_cell_rnb">
+<!-- formatting below is intentional - to avoid white spaces outside the tags -->           
+             <span id="idDCMhor1_out"><span id="idDCMhor1"><span id="idDCMhor1_i18n"
+             >full</span></span></span><span id="idDCMhor2_out"><span id="idDCMhor2"
+             >1/2</span></span><span id="idDCMhor3_out"><span id="idDCMhor3"
+             >1/3</span></span><span id="idDCMhor4_out"><span id="idDCMhor4"
+             >1/4</span></span><span id="idDCMhor5_out"><span id="idDCMhor5"
+             >1/5</span></span><span id="idDCMhor6_out"><span id="idDCMhor6"
+             >1/6</span></span><span id="idDCMhor7_out"><span id="idDCMhor7"
+             >1/7</span></span><span id="idDCMhor8_out"><span id="idDCMhor8"
+             >1/8</span></span>
+           </div>
+         </div>
+
+         <div class="settings_row">
+           <div id="idDCMvert_LB" class="settings_cell_rb">
+           </div>
+         </div>
+         <div class="settings_row">
+           <div id="idDCMvert" class="settings_cell_rnb">
+             <span id="idDCMvert1_out"><span id="idDCMvert1"><span id="idDCMvert1_i18n"
+                >full</span></span></span><span id="idDCMvert2_out"><span id="idDCMvert2"
+                >1/2</span></span><span id="idDCMvert3_out"><span id="idDCMvert3"
+                >1/3</span></span><span id="idDCMvert4_out"><span id="idDCMvert4"
+                >1/4</span></span><span id="idDCMvert5_out"><span id="idDCMvert5"
+                >1/5</span></span><span id="idDCMvert6_out"><span id="idDCMvert6"
+                >1/6</span></span><span id="idDCMvert7_out"><span id="idDCMvert7"
+                >1/7</span></span><span id="idDCMvert8_out"><span id="idDCMvert8"
+                >1/8</span></span>
+           </div>
+         </div>
+
+         <div class="settings_row">
+           <div id="idBINhor_LB" class="settings_cell_rb">
+           </div>
+         </div>
+         <div class="settings_row">
+           <div id="idBINhor" class="settings_cell_rnb">
+             <span id="idBINhor1_out"><span id="idBINhor1"><span id="idBINhor1_i18n"
+             >full</span></span></span><span id="idBINhor2_out"><span id="idBINhor2"
+             >1/2</span></span><span id="idBINhor3_out"><span id="idBINhor3"
+             >1/3</span></span><span id="idBINhor4_out"><span id="idBINhor4"
+             >1/4</span></span><span id="idBINhor5_out"><span id="idBINhor5"
+             >1/5</span></span><span id="idBINhor6_out"><span id="idBINhor6"
+             >1/6</span></span><span id="idBINhor7_out"><span id="idBINhor7"
+             >1/7</span></span><span id="idBINhor8_out"><span id="idBINhor8"
+             >1/8</span></span>
+           </div>
+         </div>
+
+         <div class="settings_row">
+           <div id="idBINvert_LB" class="settings_cell_rb">
+           </div>
+         </div>
+         <div class="settings_row">
+           <div id="idBINvert" class="settings_cell_rnb">
+             <span id="idBINvert1_out"><span id="idBINvert1"><span id="idBINvert1_i18n"
+             >full</span></span></span><span id="idBINvert2_out"><span id="idBINvert2"
+             >1/2</span></span><span id="idBINvert3_out"><span id="idBINvert3"
+             >1/3</span></span><span id="idBINvert4_out"><span id="idBINvert4"
+             >1/4</span></span><span id="idBINvert5_out"><span id="idBINvert5"
+             >1/5</span></span><span id="idBINvert6_out"><span id="idBINvert6"
+             >1/6</span></span><span id="idBINvert7_out"><span id="idBINvert7"
+             >1/7</span></span><span id="idBINvert8_out"><span id="idBINvert8"
+             >1/8</span></span>
+           </div>
+         </div>
+
+       </div> 
+
+     </div> <!-- end of tab 5 -->
+
+     <div id="idSettingsTabs_div6" style="position:absolute; left:0; top:24;  width:256;">
+       <div id="idEnableHistAll" class="settings_item">
+         <span id="idEnableHist_LB" style="float:left;"></span>
+         <div id="idEnableHist_CB" style="float:right; width:25; height:25;" ></div>
+       </div>  
+       <div id="idHistHeightAll" class="settings_item">
+         <span id="idHistHeight_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idHistHeight_TX"  size="5" value=""
+                  onchange="updateHistControls();" class="input_numeric"/>
+         </span>        
+       </div>  
+       <div id="idHistAverAll" class="settings_item">
+         <span id="idHistAver_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idHistAver_TX"  size="5" value=""
+                  onchange="updateHistControls();" class="input_numeric"/>
+         </span>        
+       </div>  
+       <div id="idHistScaleAll" class="settings_item">
+         <span id="idHistScale_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idHistScale_TX"  size="5" value=""
+                  onchange="updateHistControls();" class="input_numeric"/>
+         </span>        
+       </div>  
+       <div id="idHistLinSqrtAll" class="settings_item">
+         <span id="idHistLin"><span id="idHistLin_i18n"></span></span>
+         <span id="idHistSqrt"><span id="idHistSqrt_i18n"></span></span>
+       </div>  
+       <div id="idHistColors" class="settings_item">
+         <span id="idHistColorsR">R</span>
+         <span id="idHistColorsG">G</span>
+         <span id="idHistColorsB">B</span>
+         <span id="idHistColorsW">W</span>
+         <span id="idHistColorsG1">G1</span>
+         <span id="idHistColorsG2">G2</span>
+       </div>  
+       <div id="idHistStyle" class="settings_item">
+         <span id="idHistStyleDots"><span id="idHistStyleDots_i18n"></span></span>
+         <span id="idHistStyleLine"><span id="idHistStyleLine_i18n"></span></span>
+         <span id="idHistStyleFilled"><span id="idHistStyleFilled_i18n"></span></span>
+       </div>  
+       <div id="idHistInterp" class="settings_item">
+         <span id="idHistInterpGaps"><span id="idHistInterpGaps_i18n"></span></span>
+         <span id="idHistInterpSteps"><span id="idHistInterpSteps_i18n"></span></span>
+         <span id="idHistInterpLin"><span id="idHistInterpLin_i18n"></span></span>
+       </div>  
+     </div>
+     
+     
+     
+     <div id="idSettingsTabs_div7" style="position:absolute; left:0; top:24;  width:256;">
+       <div id="idUpgradeAll" class="settings_item">
+         <span id="idUpgrade_LB" style="float:left;"></span>
+         <div id="idUpgrade_BN" style="float:right; width:25; height:25;" ></div>
+       </div>  
+       <div id="idSoftResetAll" class="settings_item">
+         <span id="idSoftReset_LB" style="float:left;"></span>
+         <div id="idSoftReset_BN" style="float:right; width:25; height:25;" ></div>
+       </div>  
+       <div id="idSensorResetAll" class="settings_item">
+         <span id="idSensorReset_LB" style="float:left;"></span>
+         <div id="idSensorReset_BN" style="float:right; width:25; height:25;" ></div>
+       </div>  
+       
+       <div id="idTimeoutCmdAll" class="settings_item">
+         <span id="idTimeoutCmd_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idTimeoutCmd_TX"  size="5" value="5000" onchange="timeoutsChanged();" class="input_numeric"/>
+         </span>        
+       </div>  
+       
+       <div id="idTranspTooltipsAll" class="settings_item">
+         <span id="idTranspTooltips_LB" style="float:left;"></span>
+         <div id="idTranspTooltips_CB" style="float:right; width:25; height:25;" ></div>
+       </div>  
+       
+       <div id="idTimeoutStatAll" class="settings_item">
+         <span id="idTimeoutStat_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idTimeoutStat_TX"  size="5" value="5000" onchange="timeoutsChanged();" class="input_numeric"/>
+         </span>        
+       </div>  
+       <div id="idTimeoutAecmdAll" class="settings_item">
+         <span id="idTimeoutAecmd_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idTimeoutAecmd_TX"  size="5" value="5000" onchange="timeoutsChanged();" class="input_numeric"/>
+         </span>        
+       </div>  
+       <div id="idTimeoutAestatAll" class="settings_item">
+         <span id="idTimeoutAestat_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idTimeoutAestat_TX"  size="5" value="5000" onchange="timeoutsChanged();" class="input_numeric"/>
+         </span>        
+       </div>  
+       <div id="idTimeoutImgAll" class="settings_item">
+         <span id="idTimeoutImg_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idTimeoutImg_TX"  size="5" value="5000" onchange="timeoutsChanged();" class="input_numeric"/>
+         </span>        
+       </div>  
+       <div id="idTimeoutHistAll" class="settings_item">
+         <span id="idTimeoutHist_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idTimeoutHist_TX"  size="5" value="5000" onchange="timeoutsChanged();" class="input_numeric"/>
+         </span>        
+       </div>  
+       <div id="idTimeoutQuarAll" class="settings_item">
+         <span id="idTimeoutQuar_LB" style="float:left;"></span>
+         <span style="float:right;">
+            <input type="text" onmousedown="this.select()" id="idTimeoutQuar_TX"  size="5" value="5000" onchange="timeoutsChanged();" class="input_numeric"/>
+         </span>        
+       </div>  
+       
+       
+       <div id="idSetDebugHelpAll" class="settings_item">
+         <span id="idSetDebugHelp" style="float:left;"></span>
+         <div id="idSetDebugHelp_CB" style="float:right; width:25; height:25;" ></div>
+       </div>  
+       <div id="idSetDebugRequestsAll" class="settings_item">
+         <span id="idSetDebugRequests" style="float:left;"></span>
+         <div  id="idSetDebugRequests_CB" style="float:right; width:25; height:25;" ></div>
+       </div>  
+       <div id="idSetDebugOtherAll" class="settings_item">
+         <span id="idSetDebugOther" style="float:left;"></span>
+         <span style="float:right;">
+<!--            <input type="text" onmousedown="this.select()" id="idSetDebugOther_TX"  size="5" value="0"
+                  onchange="document.title='';document.debug=parseInt(document.getElementById(this.id).value); showWindow();"
+                  onmousedown="document.title='';debugWindowShow(document.getElementById('idCommStat_ALL').innerHTML);" class="input_numeric"/>-->
+            <input type="text" onmousedown="this.select()" id="idSetDebugOther_TX"  size="5" value="0"
+                  onchange="document.title='';document.debug=parseInt(document.getElementById(this.id).value); showWindow();"
+                  onmousedown="document.title='';" class="input_numeric"/>         </span>        
+       </div>  
+       <div id="idDumpTitleAll" class="settings_item">
+         <span id="idDumpTitle_LB" style="float:left;">Dump title text</span>
+         <div id="idDumpTitle_BN" style="float:right; width:25; height:25;" ></div>
+       </div>  
+       <div id="idTest1" class="settings_item">
+         <span id="idTest1_LB" style="float:left;">test1 </span>
+         <div id="idTest1_BN" style="float:right; width:25; height:25;" ></div>
+       </div>
+     </div>
+   </div>
+   
+  
+   
+
+  <div id="idUpgrade" style="display:none;position:absolute;left:256;top:0;width:512;height:256;z-index:49">
+    <div id="idUpgrade_iframe">
+    </div>
+  </div>
+  <div id="idTooltips" style="position:absolute;z-index:50;"> <!-- --> </div>
+  
+ </div>
+<a href="#" id="idLastQuery" target="_blank"></a>
+<!-- DIVS as a database of messages accessible by id -->
+<div id="idContextHelp" style="display:none"> </div>
+<div id="reload"></div> <!-- just dummy div to exist with this ID -->
+<div id="slIder"></div> <!-- just dummy div to exist with this ID -->
+<div id="frAmesel"></div> <!-- just dummy div to exist with this ID -->
+<div id="idCameraBusy"></div>
+<div id="idStreamerRunning"></div>
+<div id="idCCAMProblem"></div>
+<div id="idCCAMErr"></div>
+<div id="idPixel">pix</div>
+<div id="idMore"></div>
+<div id="idLess"></div>
+<div id="idShiftWarn"></div>
+<div id="idTitle"></div>
+<div id="idUpgradeText"></div>
+<div id="idUpgradeFirmware_LB"></div>
+<div id="idUpgradeCancel_BN"></div>
+<!--<div id="idtUpgradeNote"></div>-->
+<div id="idUpgradeNoFile"></div>
+<div id="idDVRServerInstall"></div>
+
+</body>
+</html>

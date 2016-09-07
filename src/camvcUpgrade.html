@@ -1,0 +1,72 @@
+<html>
+<!--
+*! -----------------------------------------------------------------------------**
+*! camvcUpgrade.html
+*!
+*! Copyright (C) 2005-2007 Elphel, Inc.
+*!
+*! -----------------------------------------------------------------------------**
+*!
+*!  This program is free software: you can redistribute it and/or modify
+*!  it under the terms of the GNU General Public License as published by
+*!  the Free Software Foundation, either version 3 of the License, or
+*!  (at your option) any later version.
+*!
+*!  This program is distributed in the hope that it will be useful,
+*!  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*!  GNU General Public License for more details.
+*!
+*!  You should have received a copy of the GNU General Public License
+*!  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*! -----------------------------------------------------------------------------**
+*!  $Log: camvcUpgrade.html,v $
+*!  Revision 1.1.1.1  2008/11/27 20:04:03  elphel
+*!
+*!
+*!  Revision 1.1.1.1  2007/09/19 04:51:17  elphel
+*!  This is a fresh tree based on elphel353-2.10
+*!
+*!  Revision 1.2  2007/09/19 04:51:17  elphel
+*!  Upgraded license (header)
+*!
+*!
+-->
+
+<head>
+<title>Elphel NC333L firmware upgrade</title>
+
+<script language="JavaScript" type="text/javascript">
+<!--
+function checkUpgrade() {
+	var form = document.UpgradeForm
+	if(form.fimage.value == "") {
+		alert(parent.document.getElementById("h_idUpgradeNoFile").innerHTML);
+		return;
+	}
+	window.setTimeout("document.UpgradeForm.submit()", 1000);
+}
+
+function initUpgrade() {
+  document.getElementById("idUpgradeTextI").innerHTML=parent.document.getElementById("h_idUpgradeText").innerHTML;
+  document.getElementById("idUpgradeFirmware_LBI").innerHTML=parent.document.getElementById("h_idUpgradeFirmware_LB").innerHTML;
+  document.getElementById("idUpgrade_BNI").value=parent.document.getElementById("h_idUpgrade_BN").innerHTML;
+  document.getElementById("idUpgradeCancel_BNI").value=parent.document.getElementById("h_idUpgradeCancel_BN").innerHTML;
+}
+function cancelUpgrade() {
+ parent.createUpgradeIframe(false);
+}
+
+// -->
+
+</script>
+</head>
+<body onload="initUpgrade()">
+
+<form name="UpgradeForm" action="/axis-cgi/admin/flash?-t+flash_all+-m+HTTP_POST" enctype="multipart/form-data" method="post">
+<span id="idUpgradeTextI"></span>
+<span id="idUpgradeFirmware_LBI"></span>&nbsp;<input type="file" name="fimage" value="fimage"/><br/><input type="button" id="idUpgrade_BNI" name="Upgrade" value="Upgrade" onClick="checkUpgrade()">&nbsp;
+<input type="button" id="idUpgradeCancel_BNI" name="UpgradeCancel" value="Cancel" onClick="cancelUpgrade()">
+</form>
+</body>
+</html>
