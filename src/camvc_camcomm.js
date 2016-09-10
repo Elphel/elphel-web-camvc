@@ -408,6 +408,7 @@ Requests.prototype.sendHttpReq=function() {
   this.prepTodo();
   this.serialize();
   this.url=this.php+"?";
+  this.url+="sensor_port="+document.sensor_port.toString()+"&";
   this.cmdRequsted=this.cmdNeeded; ///value of cmdNeeded when request was sent (do detect any parameters set between request sent and received)
 
   if (this.setStr.length) {

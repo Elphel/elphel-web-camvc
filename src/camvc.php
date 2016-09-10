@@ -2,7 +2,7 @@
 /*!*******************************************************************************
 *! FILE NAME  : camvc.php
 *! DESCRIPTION: PHP companion of camvc
-*! Copyright (C) 2008 Elphel, Inc
+*! Copyright (C) 2008-2016 Elphel, Inc
 *! -----------------------------------------------------------------------------**
 *!
 *!  This program is free software: you can redistribute it and/or modify
@@ -177,10 +177,10 @@ function prepSetNative() {
 }
 function applySetNative($ahead) {
   global $set,$setNative,$pgmFrameNumber;
-  $pgmFrameNumber=elphel_get_frame()+$ahead;
+  $pgmFrameNumber=elphel_get_frame($GLOBALS['sensor_port'])+$ahead;
 ///NOTE: no verification (and no waiting) that the trget frame is not too far in the future
   foreach ($setNative as $since=>$pgmpars) {
-     elphel_set_P_arr ($pgmpars, $pgmFrameNumber+$since);
+     elphel_set_P_arr($GLOBALS['sensor_port'],$pgmpars, $pgmFrameNumber+$since);
   }
 }
 
@@ -208,7 +208,7 @@ function  addGammas() {
    foreach ($gammas as $gamma_black=>$whatever) {
      $black=($gamma_black>>8) & 0xff;
      $gamma=($gamma_black & 0xff)*0.01;
-     elphel_gamma_add ($gamma, $black);
+     elphel_gamma_add($gamma, $black);
    }
 }
 
@@ -312,6 +312,18 @@ function decodeGet ($encoded_get) {
 }
 ///main()
          $MAX_EXECUTION_TIME=20;
+         $GLOBALS['sensor_port']=0;
+         if ($_GET['sensor_port']!=NULL){
+         	$GLOBALS['sensor_port'] = myval($_GET['sensor_port']);
+         }
+         $GLOBALS['subcahannel']=0; // TODO NC393: handle! It applies to multiplexer mode, gammas, histograms and focus
+                                           // Initially it all will be 0 (common) as it was in 353
+         if ($_GET['subcahannel']!=NULL){
+         	$GLOBALS['subcahannel'] = myval($_GET['subcahannel']);
+         }
+         
+         $GLOBALS['imgsrv_port'] = 2323 + $GLOBALS['sensor_port']; // read port from some centralized place
+              
          $deadline=time()+$MAX_EXECUTION_TIME;
 ///         set_time_limit(20); - /// does not work!
          $exif_get=false;
@@ -341,13 +353,14 @@ function decodeGet ($encoded_get) {
               exec("date -s ".date("mdHiY.s",(int)$a),$out,$ret); // set system time
               break;
             case "imgsrv":
-              $toRead["imgsrv"]='http://'.$_SERVER['HTTP_HOST'].':8081/';
+//              $toRead["imgsrv"]='http://'.$_SERVER['HTTP_HOST'].':8081/';
+              $toRead["imgsrv"]='http://'.$_SERVER['HTTP_HOST'].':'.strval($GLOBALS['imgsrv_port']).'/';
               break;
             case "exif":
               $exif_get=$value+0; //page number
               break;
             case "description":
-              if ( $value!==null)  elphel_set_exif_field(0x10e, $value.chr(0));
+              if ( $value!==null)  elphel_set_exif_field($GLOBALS['sensor_port'], 0x10e, $value.chr(0));
               break;
             case "circbuf":
               $circbuf_get=true;
@@ -379,8 +392,8 @@ function decodeGet ($encoded_get) {
 
          if (array_key_exists("dbgwait",$_GET)) {
 /// NOTE: DOES not notice if connection is reset by the client and keeps php busy !...
-              while (elphel_get_P_value(ELPHEL_DEBUG+(1<<21)+(28<<16))) {
-                elphel_skip_frames(1);
+              while (elphel_get_P_value($GLOBALS['sensor_port'],ELPHEL_DEBUG+(1<<21)+(28<<16))) {
+                elphel_skip_frames($GLOBALS['sensor_port'],1);
                 if (time()>$deadline) {
                    error_log("Aborted due to custom timeout");
                    exit(1);
@@ -389,7 +402,7 @@ function decodeGet ($encoded_get) {
           }
 /// Do whatever needed
 
-  $allNative=elphel_get_P_arr($allNative);
+  $allNative=elphel_get_P_arr($GLOBALS['sensor_port'],$allNative);
   $parVal=array();
 //  foreach ($get as $key=>$value) $parVal[$key]= abstractValue($key);
   foreach ($get as $key=>$value) $parVal[$key]= abstractValue($key);
@@ -445,20 +458,19 @@ echo "</pre>\n";
            }
          }
 
-
-
 //         if (count($toRead)>0) $toRead=elphel_get_P_arr($toRead);
-         if ($_GET["STATE"]!==NULL) $toRead["STATE"]=elphel_get_state();
-         if ($_GET["imgsrv"]!==NULL) $toRead["imgsrv"]='http://'.$_SERVER['HTTP_HOST'].':8081/';
+         if ($_GET["STATE"]!==NULL) $toRead["STATE"]=elphel_get_state($GLOBALS['sensor_port']);
+         if ($_GET["imgsrv"]!==NULL) $toRead["imgsrv"]='http://'.$_SERVER['HTTP_HOST'].':'.strval($GLOBALS['imgsrv_port']).'/';
+        
          foreach ($debug_arr as $key=>$value) {
             $xml->addChild ($key,$value);
          }
-$xml->addChild ("ELPHEL_DEBUG__0128",elphel_get_P_value(ELPHEL_DEBUG+(1<<21)+(28<<16)));
+$xml->addChild ("ELPHEL_DEBUG__0128",elphel_get_P_value($GLOBALS['sensor_port'],ELPHEL_DEBUG+(1<<21)+(28<<16)));
          foreach ($toRead as $key=>$value) {
             $xml->addChild ($key,$value);
          }
          if ($exif_get!==false) {
-           $exif_got=elphel_get_exif_elphel($exif_get);
+           $exif_got=elphel_get_exif_elphel($GLOBALS['sensor_port'],$exif_get);
            if ($exif_got) {
              $xml->addChild ('Exif');
              $xml->Exif->addChild ("Exif_page",$exif_get);
@@ -472,24 +484,24 @@ $xml->addChild ("ELPHEL_DEBUG__0128",elphel_get_P_value(ELPHEL_DEBUG+(1<<21)+(28
          if ($hist_in_thresh) {
               $xml->addChild ('hist_in');
               $xml->hist_in->addChild ('hist_in_thresh',$hist_in_thresh);
-              $xml->hist_in->addChild ('hist_in_r', elphel_histogram(0,elphel_gamma(0,$hist_in_thresh)));
-              $xml->hist_in->addChild ('hist_in_g', elphel_histogram(1,elphel_gamma(1,$hist_in_thresh)));
-              $xml->hist_in->addChild ('hist_in_g2',elphel_histogram(2,elphel_gamma(2,$hist_in_thresh)));
-              $xml->hist_in->addChild ('hist_in_b', elphel_histogram(3,elphel_gamma(3,$hist_in_thresh)));
+              $xml->hist_in->addChild ('hist_in_r', elphel_histogram($GLOBALS['sensor_port'], $GLOBALS['subcahannel'],0,elphel_gamma(0,$hist_in_thresh)));
+              $xml->hist_in->addChild ('hist_in_g', elphel_histogram($GLOBALS['sensor_port'], $GLOBALS['subcahannel'],1,elphel_gamma(1,$hist_in_thresh)));
+              $xml->hist_in->addChild ('hist_in_g2',elphel_histogram($GLOBALS['sensor_port'], $GLOBALS['subcahannel'],2,elphel_gamma(2,$hist_in_thresh)));
+              $xml->hist_in->addChild ('hist_in_b', elphel_histogram($GLOBALS['sensor_port'], $GLOBALS['subcahannel'],3,elphel_gamma(3,$hist_in_thresh)));
          }
 /// here $hist_out_thresh corresponds to output (8-bit) pixel values as fractions of the 8-bit full scale (255)
          if ($hist_out_thresh) {
               $xml->addChild ('hist_out');
               $xml->hist_out->addChild ('hist_out_thresh',$hist_out_thresh);
-              $xml->hist_out->addChild ('hist_out_r', elphel_histogram(0,$hist_out_thresh));
-              $xml->hist_out->addChild ('hist_out_g', elphel_histogram(1,$hist_out_thresh));
-              $xml->hist_out->addChild ('hist_out_g2',elphel_histogram(2,$hist_out_thresh));
-              $xml->hist_out->addChild ('hist_out_b', elphel_histogram(3,$hist_out_thresh));
+              $xml->hist_out->addChild ('hist_out_r', elphel_histogram($GLOBALS['sensor_port'], $GLOBALS['subcahannel'],0,$hist_out_thresh));
+              $xml->hist_out->addChild ('hist_out_g', elphel_histogram($GLOBALS['sensor_port'], $GLOBALS['subcahannel'],1,$hist_out_thresh));
+              $xml->hist_out->addChild ('hist_out_g2',elphel_histogram($GLOBALS['sensor_port'], $GLOBALS['subcahannel'],2,$hist_out_thresh));
+              $xml->hist_out->addChild ('hist_out_b', elphel_histogram($GLOBALS['sensor_port'], $GLOBALS['subcahannel'],3,$hist_out_thresh));
          }
 ///circbuf+exif pointres
           if ($circbuf_get) {
             $xml->addChild ('circbuf');
-             $circbuf=elphel_get_circbuf_pointers();
+             $circbuf=elphel_get_circbuf_pointers($GLOBALS['sensor_port']);
             if (is_array  ($circbuf)) {
               $circbuf_count=count($circbuf);
 //              $xml->circbuf->addChild ('circbuf_count',$circbuf_count);

@@ -2516,7 +2516,12 @@ function initOnLoad() {
   if (url.indexOf("highBandwidth")>=0) document.highBandwidth=1;
   if (url.indexOf("//192.")>=0) document.highBandwidth=1;
   if (url.indexOf("//10.")>=0) document.highBandwidth=1;
-
+  // NC393: need to read sensor_port=<0..3> parameter
+  document.sensor_port = 0;
+  if (url.indexOf("sensor_port=")>=0) {
+	  document.sensor_port = parseInt(url.substr(url.indexOf("sensor_port=")+12,1), 10);
+  }
+  
   initVideoPlugin();
 
   initInterface();
@@ -2544,8 +2549,8 @@ function initOnLoad() {
     else                    url+="&reload=0";
     if ((!window.opener) ||(typeof(window.opener)=="undefined")) {
       if (window.confirm(document.getElementById("h_reload").innerHTML)) {
-// unique window name (per url) so multiple cameras can be opened
-        win=window.open(url,'ELphel 353 '+url.substr(7),'scrollbars=no,resizable=yes,toolbar=no,location=no,directories=no,menubar=no,status=no' );
+// unique window name (per url) so multiple cameras can be opened (url.substr(7) - just to skip 'http://')
+        win=window.open(url,'Elphel 393 '+url.substr(7)+":"+document.sensor_port.toString(),'scrollbars=no,resizable=yes,toolbar=no,location=no,directories=no,menubar=no,status=no' );
         if (win) {
           win.focus();
           parent.window.location="closeme.html";// if did not close
