@@ -441,7 +441,7 @@ function receivedConfigsXML() {
                   { //
 			configs_mainLoop();	// **** back to main loop ****
 		} else {
-			alert_once("There was a problem retrieving the XML data:\n" + configXML_req.statusText);
+			alert_once("There was a problem retrieving the XML data (receivedConfigsXML):\n" + configXML_req.statusText);
 		}
 	}
 }

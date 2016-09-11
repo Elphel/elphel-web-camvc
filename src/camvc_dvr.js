@@ -140,7 +140,7 @@ function req_DVR_rec() {
             // ...processing statements go here...
           req_DVR_rec_got(); // **** back to main loop ****
         } else {
-            alert_once("There was a problem retrieving the XML data:\n" +
+            alert_once("There was a problem retrieving the XML data (req_DVR_rec):\n" +
                 DVRxml_req.statusText);
         }
     }

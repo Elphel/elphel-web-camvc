@@ -455,7 +455,7 @@ checkBadUrl(this.url,"Requests.prototype.sendHttpReq");
         } else {
           if ((document.cameraParametersAcquired) || (gXML_req.status)) /// Status 0 is common when the page is reloaded with some request pending
              if (gXML_req.status || document.cameraParametersAcquired) { /// Ignoring stray responces when page is reloaded
-             alert_once("There was a problem retrieving the XML data:\n" + (gXML_req.status?gXML_req.statusText:"gXML_req.status==0")+ ", document.cameraParametersAcquired="+document.cameraParametersAcquired+
+             alert_once("There was a problem retrieving the XML data:\nRequests.prototype.sendHttpReq\n" + this.url+"\n"+(gXML_req.status?gXML_req.statusText:"gXML_req.status==0")+ ", document.cameraParametersAcquired="+document.cameraParametersAcquired+
              "\nYou may safely ignore this message if you just reloaded this page");
           }
         }
