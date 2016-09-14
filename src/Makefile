@@ -5,6 +5,13 @@ SHELL=/bin/bash
 
 # set root as owned and group owner for all files
 
+#in NC353 following config files were used (camvc_main.js):
+#document.configs_NetworkFile="/etc/conf.d/net.eth0";
+#document.configs_Mac="/etc/conf.d/mac";
+#document.configs_WebcamFile= "/etc/conf.d/ccamftp.conf";
+#document.configs_FtpFile= "/etc/conf.d/ccamftp.conf";
+#document.configs_VideoFile= "/var/state/streamer.conf";
+
 OWN = -o root -g root
 
 DOCUMENTROOT=/www/pages
