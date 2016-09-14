@@ -2,7 +2,7 @@
 *! -----------------------------------------------------------------------------**
 *! FILE NAME  : camvc_main.js
 *! DESCRIPTION: main javascript functions and arrays
-*! Copyright (C) 2008 Elphel, Inc.
+*! Copyright (C) 2008-2016 Elphel, Inc.
 *!
 *! -----------------------------------------------------------------------------**
 *!
@@ -1228,7 +1228,9 @@ if (document.debug & 32) document.title +=" TopW="+x+" TopH="+y;
 //    top.resizeTo(x,y);
 //  d ocument.title=  document.getElementById("idDivAutoexpTable").height+":"+document.getElementById("idDivAutoexpTable").style.height;
    showMoreLess();
-   if ((document.debug==0) &&document.getElementById("h_idTitle") &&    (typeof (document.getElementById("h_idTitle"))!="undefined")) document.title=document.getElementById("h_idTitle").innerHTML;
+   if ((document.debug==0) &&document.getElementById("h_idTitle") &&    (typeof (document.getElementById("h_idTitle"))!="undefined")) {
+	   document.title=document.getElementById("h_idTitle").innerHTML+":"+document.sensor_port;
+   }
 
  }  
   
@@ -1944,10 +1946,10 @@ function released_btnSnapFull(s) {
     alert ("SnapFull settings are not implemented yet");
     return;
   }
-  var frame=gRequests.receivedFrame; /// not the actual snapshot frame, just generationg different title name
-  var url="/snapfull.php"; /// no parameters yet
+  var frame=gRequests.receivedFrame; /// not the actual snapshot frame, just generating different title name
+  var url="/snapfull.php?sensor_port="+document.sensor_port; /// no parameters yet
   if (document.shiftKey) url+='?save';
-  var win=window.open(url,'Elphel 353 Snapshot image'+frame,'scrollbars=no,resizable=yes,toolbar=no,location=no,directories=no,menubar=no,status=no' );
+  var win=window.open(url,'Elphel 393 Snapshot image'+document.sensor_port+":"+frame,'scrollbars=no,resizable=yes,toolbar=no,location=no,directories=no,menubar=no,status=no' );
 }
 function released_btnSettingsShow1(s) {
      document.divVisibility["idDivSettings"]=(document.divVisibility["idDivSettings"] == "none")? "":"none";
@@ -2572,7 +2574,7 @@ function initOnLoad() {
 //  debugWindowShow(  document.getElementById("idSettingsTabs_div4").innerHTML);
 //  showPixPerc(); // will be called by setI18nAll;
 initUpgradeIframe();
-  document.title=document.getElementById("h_idTitle").innerHTML;
+  document.title=document.getElementById("h_idTitle").innerHTML+":'"+document.sensor_port+"'";
   restoreTabsState(false); // open tabs at specific initial position
   document.getElementById("idStartup").style.display="none";
 // debugWindowShow(  document.getElementById("idNetworkTabs_div4").innerHTML);
@@ -2581,6 +2583,7 @@ initUpgradeIframe();
 // debugWindowShow(document.getElementById("idDivDVR").innerHTML);
 // debugWindowShow(document.getElementById("test_f1").innerHTML);
   initShieldButtons();
+  hideStreamPage();
   document.getElementById("idDVRSoftware").href=document.DVRSoftware;
 
 }
