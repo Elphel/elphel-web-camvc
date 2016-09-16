@@ -494,6 +494,7 @@ camInterface.prototype.initHistControls= function () {
 //function ccs_makeHistURL() {
 camInterface.prototype.makeHistURL= function () {
    gRequests.histUrl=gRequests.histogram;
+   gRequests.histUrl+="sensor_port="+document.sensor_port+"&";
    gRequests.histUrl+="sqrt="+(document.hist.sqr?"1":"0")+"&";
    var sc=parseFloat(document.getElementById("idHistScale_TX").value);
    if (!((sc>0.001) &&  (sc< 1000))) {
