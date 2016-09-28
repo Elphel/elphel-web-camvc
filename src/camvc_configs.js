@@ -417,7 +417,6 @@ function configs_mainLoop() {
 
 }
 
-
 function startConfigsXML() {
 	configs_cameraTimer(document.configs.timeout);
 	checkBadUrl(document.configs.url, "startConfigsXML");
@@ -441,7 +440,7 @@ function receivedConfigsXML() {
                   { //
 			configs_mainLoop();	// **** back to main loop ****
 		} else {
-			alert_once("There was a problem retrieving the XML data (receivedConfigsXML):\n" + configXML_req.statusText);
+			alert_once("There was a problem retrieving the XML data (receivedConfigsXML):\n" + configXML_req.statusText + " document.configs.url="+ document.configs.url);
 		}
 	}
 }
