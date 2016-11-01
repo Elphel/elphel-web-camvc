@@ -344,8 +344,8 @@ function decodeGet ($encoded_get) {
 /// _time - will look at FPGA time and program both FPGA and system, _stime - unconditionally program both
             case "_time":
               $toRead["req_ts"]=$value; /// Request time stamp, as received. Will be used by sender
-              if (elphel_get_fpga_time() > 100000000) break; // time already set
-
+              $a=((float) $value)/1000;
+              if (abs(elphel_get_fpga_time()-$a) > 24*3600) break; // time already set
             case "_stime":
               $toRead["req_ts"]=$value;
               $a=((float) $value)/1000;
