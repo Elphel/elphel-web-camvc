@@ -351,6 +351,7 @@ function decodeGet ($encoded_get) {
               $a=((float) $value)/1000;
               elphel_set_fpga_time ($a); // set FPGA time
               exec("date -s ".date("mdHiY.s",(int)$a),$out,$ret); // set system time
+              exec("hwclock --systohc");
               break;
             case "imgsrv":
 //              $toRead["imgsrv"]='http://'.$_SERVER['HTTP_HOST'].':8081/';
