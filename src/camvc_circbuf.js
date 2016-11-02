@@ -145,7 +145,7 @@ function showCircbufFrame(frame_num) {
 }
 
 function parseExif(xml) {
-    var v;
+    var v,f;
     var needsRedraw=false;
     if (typeof(xml.getElementsByTagName('ImageDescription' )[0])=='undefined') {
        if (document.getElementById('idImageDescription_ALL').style.display !='none') needsRedraw=true;;
@@ -175,7 +175,8 @@ function parseExif(xml) {
     } else {
        if (document.getElementById('idExifFrameNumber_ALL').style.display =='none') needsRedraw=true;;
        document.getElementById("idExifFrameNumber_ALL").style.display ="";
-       document.getElementById("idExifFrameNumber").innerHTML=parseInt(v)+" ("+(parseInt(v) & 7)+")";
+       f=parseInt(v) & 15;
+       document.getElementById("idExifFrameNumber").innerHTML=parseInt(v)+" ("+((f<10)?" ":"")+f+")";
     }
 
     v=         getIfDefinedFCNV(xml.getElementsByTagName('ExposureTime' )[0]);
