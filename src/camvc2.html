@@ -227,6 +227,12 @@ input {
 <script src="camvc_configs.js?_TIMESTAMP_" type="text/javascript"></script>
 <script src="camvc_dvr.js?_TIMESTAMP_" type="text/javascript"></script>
 
+<script src="js/elphel.js"></script>
+<script src="js/jquery-3.1.1.js"></script>
+<script src="js/jcanvas.js"></script>
+<script src="js/exif.js"></script>
+<script src="js/jquery-jp4.js"></script>
+
 </head>
 <body  onload="initOnLoad();" onResize="resizeMainWindow();" onunload="hideStreamPage();" style="background-color: #888888; overflow:hidden;">
  <div id="idStartup" style="position:absolute; width:100%; height:100%; background-color: #ffffff; z-index:100; cursor:wait;background-image:url(images/elphel_logo256x256.png?_TIMESTAMP_);background-repeat:no-repeat;background-position:center center;"><H1>Loading...</H1>
@@ -273,7 +279,9 @@ input {
    <div id="idShieldButtonsFromPlugin_200" style="position:fixed;"><!-- --></div>
    <div id="idShieldButtonsFromPlugin_225" style="position:fixed;"><!-- --></div>
    <div id="idDivCameraImage" style="position:absolute;left:256; top:0;  width:544; height:256;">
-     <img id="idCameraImage" src="images/empty.png?_TIMESTAMP_" style="width:100%;height:100%;z-index:-3" onClick="startRefresh()">
+     <div id="idCameraImage_div" style="position:absolute;top:0px;left:0px;width:100%;height:100%;z-index:0" onClick="startRefresh()">
+     </div>
+     <img id="idCameraImage" src="images/empty.png?_TIMESTAMP_" style="width:100%;height:100%;z-index:-3;display:none;" onClick="startRefresh()">
      <div id="idDivCameraImageCover"  style="position:absolute;left:0; top:0;  width:100%; height:100%;">
        <img src="images/empty.png?_TIMESTAMP_" style="width:1; height:1">
      </div>

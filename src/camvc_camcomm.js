@@ -440,7 +440,9 @@ Requests.prototype.sendHttpReq=function() {
   this.url+=this.extraParameters;
   this.url+="&_time="+this.timestamp;
   if (this.imgsrv=="") this.url+="&imgsrv";
-checkBadUrl(this.url,"Requests.prototype.sendHttpReq");
+  
+  checkBadUrl(this.url,"Requests.prototype.sendHttpReq");
+  
   gXML_req=new XMLHttpRequest();
   gXML_req.open("GET", this.url, true);
   gXML_req.reqObject = this;
