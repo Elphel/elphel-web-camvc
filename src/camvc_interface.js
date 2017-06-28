@@ -593,13 +593,12 @@ camInterface.prototype.gotShadow=function() {
   
   var circbuf_fp = gRequests.circbuf_fp;
   if (circbuf_fp){
-    img_port = img_port+"/"+circbuf_fp.replace(/\//ig,""); 
+    img_port = img_port+"/"+circbuf_fp.replace(/\//ig,"");
   }
   
   if (jp4obj!=undefined){
 	  
 	var tmp = jp4obj.data.getAddr();
-	
 	if (img_port!=tmp[1]){
 		jp4obj.data.setAddr(img_addr,img_port);
 	}
