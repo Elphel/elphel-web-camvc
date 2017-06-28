@@ -582,6 +582,7 @@ camInterface.prototype.gotShadow=function() {
   }
   gRequests.inProgress= false;
   document.imageGot=    true;
+  
   document.getElementById("idCameraImage").src=gRequests.shadowImage.src;
   
   var tmp = gRequests.imgsrv;
@@ -589,6 +590,11 @@ camInterface.prototype.gotShadow=function() {
   
   var img_addr = tmp[1].replace(/\//ig,"");
   var img_port = tmp[2].replace(/\//ig,"");
+  
+  var circbuf_fp = gRequests.circbuf_fp;
+  if (circbuf_fp){
+    img_port = img_port+"/"+circbuf_fp.replace(/\//ig,""); 
+  }
   
   if (jp4obj!=undefined){
 	  
