@@ -1,5 +1,3 @@
-html/*
-attic/*
 /.project
 /.cproject
 /.pydevproject
@@ -7,9 +5,14 @@ attic/*
 /.settings
 .directory
 generated*
-sysroots
-bitbake-logs
 /temp/
 *.o
 *.cgi
+
+doxygen.tag
+/attic
+/sysroots
+/bitbake-logs
 /image
+/scripts
+/html
