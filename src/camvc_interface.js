@@ -656,6 +656,13 @@ camInterface.prototype.gotShadow=function() {
      dbgp(4," Iold");
    }
   
+  $($("#idCameraImage_div").find("#working")[0]).off("canvas_ready").on("canvas_ready",function(){
+	  var newsrc = ($("#idCameraImage_div").find("#display")[0]).toDataURL();
+	  frAmeselSetImage ("idMagnifier_frAmesel", newsrc);
+	  frAmeselSetImage ("idWindow_frAmesel", newsrc);
+  });
+  
+  
   //new src
   var newsrc = ($("#idCameraImage_div").find("#display")[0]).toDataURL();
   
@@ -664,8 +671,9 @@ camInterface.prototype.gotShadow=function() {
   
   frAmeselSetImage ("idMagnifier_frAmesel", newsrc);
   frAmeselSetImage ("idWindow_frAmesel", newsrc);
-
+  
   requestsNextState(true); // **** back to the main loop: GOOD
+  
 }
 
 camInterface.prototype.statusUpdate=function() {
