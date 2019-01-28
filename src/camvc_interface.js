@@ -574,6 +574,7 @@ camInterface.prototype.gotHistogram=function() {
 }
 
 var jp4obj;
+var jp4obj_enabled = false;
 
 camInterface.prototype.gotShadow=function() {
 //  alert ("gotShadow: typeof(this)="+typeof(this)+"\ntypeof(gRequests)="+typeof(gRequests));
@@ -624,7 +625,9 @@ camInterface.prototype.gotShadow=function() {
 	
   }else{
 	// this requires jquery
-    jp4obj = $("#idCameraImage_div").jp4({ip:img_addr,port:img_port,width:document.getElementById("idDivCameraImage").offsetWidth,fast:true,lowres:1,note:true});
+	if (jp4obj_enabled) {
+		jp4obj = $("#idCameraImage_div").jp4({ip:img_addr,port:img_port,width:document.getElementById("idDivCameraImage").offsetWidth,fast:true,lowres:1,note:true});
+	}
   }
   
   document.getElementById("idImageLink").href= gRequests.shadowImage.src;
@@ -662,15 +665,14 @@ camInterface.prototype.gotShadow=function() {
 	  frAmeselSetImage ("idWindow_frAmesel", newsrc);
   });
   
-  
-  //new src
-  var newsrc = ($("#idCameraImage_div").find("#display")[0]).toDataURL();
-  
-  //frAmeselSetImage ("idMagnifier_frAmesel",    gRequests.shadowImage.src);
-  //frAmeselSetImage ("idWindow_frAmesel",gRequests.shadowImage.src);
-  
-  frAmeselSetImage ("idMagnifier_frAmesel", newsrc);
-  frAmeselSetImage ("idWindow_frAmesel", newsrc);
+  if (jp4obj_enabled){
+	  var newsrc = ($("#idCameraImage_div").find("#display")[0]).toDataURL();
+	  frAmeselSetImage ("idMagnifier_frAmesel", newsrc);
+	  frAmeselSetImage ("idWindow_frAmesel", newsrc);
+  }else{
+	  frAmeselSetImage ("idMagnifier_frAmesel",    gRequests.shadowImage.src);
+	  frAmeselSetImage ("idWindow_frAmesel",gRequests.shadowImage.src);	  
+  }
   
   requestsNextState(true); // **** back to the main loop: GOOD
   
