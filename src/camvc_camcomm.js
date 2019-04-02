@@ -565,6 +565,8 @@ Requests.prototype.parseXML=function(xml) {
 function getIfDefinedFCNV(obj) {return (typeof(obj)!="undefined")?((obj.firstChild)?obj.firstChild.nodeValue:""):"";}
 function getIfDefined0FCNV(obj) {return (obj.length && (typeof(obj[0])!="undefined"))?((obj[0].firstChild)?obj[0].firstChild.nodeValue:""):"";}
 
+var veryFirstImage = true;
+
 Requests.prototype.getImage=function() {
 //  if (!document.imageEnabled) { requestsNextState(true); return; } // **** back to the main loop: SKIPPED
   if (getBuTton('idEnableImageRefresh_CB').s==0) { requestsNextState(true); return; } /// **** back to the main loop: SKIPPED
@@ -573,6 +575,14 @@ Requests.prototype.getImage=function() {
 ///       document.requests.img++; debugComm(8192);
   if (gPRoot["comp_run"].getValue() == 'run'){
     this.shadowImage.src=  this.imgsrv+this.imgUrl+"&_time="+t.getTime();
+    // for TIFF format there will be no onload event, need to fire it manually
+    if (gPRoot["color"].getValue()==15 && veryFirstImage){
+        var e = document.createEvent('HTMLEvents');
+        e.initEvent("load", false, true);
+        this.shadowImage.dispatchEvent(e);
+        //$(this.shadowImage).trigger("onload");
+    }
+    veryFirstImage = false;
 //    document.title+="bimg";
   } else if (this.ExifCircbufImgNeeded) {
     var newUrl=this.imgsrv+this.circbuf_fp+this.imgUrl;

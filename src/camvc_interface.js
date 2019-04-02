@@ -576,6 +576,9 @@ camInterface.prototype.gotHistogram=function() {
 var jp4obj;
 
 camInterface.prototype.gotShadow=function() {
+
+  console.log("Onload!");
+
 //  alert ("gotShadow: typeof(this)="+typeof(this)+"\ntypeof(gRequests)="+typeof(gRequests));
   if ((gPRoot["comp_run"].getValue() != 'run') && (gRequests.shadowImage.src.indexOf(gRequests.circbuf_fp)>=0)) {
     gRequests.ExifCircbufImgNeeded=false;
@@ -623,7 +626,7 @@ camInterface.prototype.gotShadow=function() {
 	jp4obj.data.resize(document.getElementById("idDivCameraImage").offsetWidth);
 	
   }else{
-	// this requires jquery
+    // this requires jquery
     jp4obj = $("#idCameraImage_div").jp4({ip:img_addr,port:img_port,width:document.getElementById("idDivCameraImage").offsetWidth,fast:true,lowres:1,note:true});
   }
   
@@ -659,7 +662,8 @@ camInterface.prototype.gotShadow=function() {
   $($("#idCameraImage_div").find("#working")[0]).off("canvas_ready").on("canvas_ready",function(){
 	  var newsrc = ($("#idCameraImage_div").find("#display")[0]).toDataURL();
 	  frAmeselSetImage ("idMagnifier_frAmesel", newsrc);
-	  frAmeselSetImage ("idWindow_frAmesel", newsrc);
+      frAmeselSetImage ("idWindow_frAmesel", newsrc);
+      $(gRequests.shadowImage).trigger("load");
   });
   
   
