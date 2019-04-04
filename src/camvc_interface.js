@@ -577,8 +577,6 @@ var jp4obj;
 
 camInterface.prototype.gotShadow=function() {
 
-  console.log("Onload!");
-
 //  alert ("gotShadow: typeof(this)="+typeof(this)+"\ntypeof(gRequests)="+typeof(gRequests));
   if ((gPRoot["comp_run"].getValue() != 'run') && (gRequests.shadowImage.src.indexOf(gRequests.circbuf_fp)>=0)) {
     gRequests.ExifCircbufImgNeeded=false;
@@ -663,7 +661,10 @@ camInterface.prototype.gotShadow=function() {
 	  var newsrc = ($("#idCameraImage_div").find("#display")[0]).toDataURL();
 	  frAmeselSetImage ("idMagnifier_frAmesel", newsrc);
       frAmeselSetImage ("idWindow_frAmesel", newsrc);
-      $(gRequests.shadowImage).trigger("load");
+      var format = jp4obj.data.getFormat();
+      if (format=="TIFF"){
+        $(gRequests.shadowImage).trigger("load");
+      }
   });
   
   
