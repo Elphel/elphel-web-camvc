@@ -260,11 +260,11 @@ function abstractToNative($absPar) {
     case "csr":   return array ("COLOR_SATURATION_RED"=>100);
     case "comp_run": return array ("COMPRESSOR_RUN"=>array("stop","single","run"));
     case "sens_run": return array ("SENSOR_RUN"=>array("stop","single","run"));
-    case "sensor":   return array ("SENSOR"=>array(56 => "MT9F002", 4 => "ZR32112", 8 => "ZR32212",32 => "KAC1310",36 => "KAC5000",48 => "MI1300",49 => "MT9M001",50 => "MT9D001",51 => "MT9T001",52 => "MT9P001",64 => "IBIS51300"));
-    case "decXmask": return array ("SENSOR"=>array(56 => 255,       4 => 139,       8 => 139,      32 => 32907,    36 => 15,       48 => 139,     49 => 139,      50 => 139,      51 => 255,      52 => 255,      64 => 0));
-    case "decYmask": return array ("SENSOR"=>array(56 => 255,       4 => 139,       8 => 139,      32 => 32907,    36 => 13,       48 => 139,     49 => 139,      50 => 139,      51 => 255,      52 => 255,      64 => 0));
-    case "binXmask": return array ("SENSOR"=>array(56 => 255,       4 =>   0,       8 =>   0,      32 =>     0,    36 =>  3,       48 =>   0,     49 =>   0,      50 =>   0,      51 => 255,      52 => 255,      64 => 0));
-    case "binYmask": return array ("SENSOR"=>array(56 => 255,       4 =>   0,       8 =>   0,      32 =>     0,    36 =>  3,       48 =>   0,     49 =>   0,      50 =>   0,      51 => 255,      52 => 255,      64 => 0));
+    case "sensor":   return array ("SENSOR"=>array(56 => "MT9F002", 4 => "ZR32112", 8 => "ZR32212",32 => "KAC1310",36 => "KAC5000",48 => "MI1300",49 => "MT9M001",50 => "MT9D001",51 => "MT9T001",52 => "MT9P001",64 => "IBIS51300", 68 => "LEPTON35"));
+    case "decXmask": return array ("SENSOR"=>array(56 => 255,       4 => 139,       8 => 139,      32 => 32907,    36 => 15,       48 => 139,     49 => 139,      50 => 139,      51 => 255,      52 => 255,      64 => 0, 68 => 255));
+    case "decYmask": return array ("SENSOR"=>array(56 => 255,       4 => 139,       8 => 139,      32 => 32907,    36 => 13,       48 => 139,     49 => 139,      50 => 139,      51 => 255,      52 => 255,      64 => 0, 68 => 255));
+    case "binXmask": return array ("SENSOR"=>array(56 => 255,       4 =>   0,       8 =>   0,      32 =>     0,    36 =>  3,       48 =>   0,     49 =>   0,      50 =>   0,      51 => 255,      52 => 255,      64 => 0, 68 => 255));
+    case "binYmask": return array ("SENSOR"=>array(56 => 255,       4 =>   0,       8 =>   0,      32 =>     0,    36 =>  3,       48 =>   0,     49 =>   0,      50 =>   0,      51 => 255,      52 => 255,      64 => 0, 68 => 255));
     case "hrw":    return array ("HISTWND_RWIDTH"=>0x10000);
     case "hrh":    return array ("HISTWND_RHEIGHT"=>0x10000);
     case "hrl":    return array ("HISTWND_RLEFT"=>0x10000);
