@@ -625,7 +625,8 @@ camInterface.prototype.gotShadow=function() {
 	
   }else{
     // this requires jquery
-    jp4obj = $("#idCameraImage_div").jp4({ip:img_addr,port:img_port,width:document.getElementById("idDivCameraImage").offsetWidth,fast:true,lowres:1,note:true});
+    //jp4obj = $("#idCameraImage_div").jp4({ip:img_addr,port:img_port,width:document.getElementById("idDivCameraImage").offsetWidth,fast:true,lowres:1,note:true});
+      jp4obj = $("#idCameraImage_div").jp4({src:"http://"+img_addr+":"+img_port+"/img",width:document.getElementById("idDivCameraImage").offsetWidth,fast:true,lowres:1,note:true});
   }
   
   document.getElementById("idImageLink").href= gRequests.shadowImage.src;
