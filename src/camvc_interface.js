@@ -599,10 +599,12 @@ camInterface.prototype.gotShadow=function() {
   
   if (jp4obj!=undefined){
 	  
+        /*
 	var tmp = jp4obj.data.getAddr();
 	if (img_port!=tmp[1]){
 		jp4obj.data.setAddr(img_addr,img_port);
 	}
+	*/
     
 	var format = jp4obj.data.getFormat();
 	var format_note = document.getElementById("format_note");
