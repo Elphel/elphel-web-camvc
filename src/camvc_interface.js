@@ -599,10 +599,12 @@ camInterface.prototype.gotShadow=function() {
   
   if (jp4obj!=undefined){
 	  
+        /*
 	var tmp = jp4obj.data.getAddr();
 	if (img_port!=tmp[1]){
 		jp4obj.data.setAddr(img_addr,img_port);
 	}
+	*/
     
 	var format = jp4obj.data.getFormat();
 	var format_note = document.getElementById("format_note");
@@ -625,7 +627,8 @@ camInterface.prototype.gotShadow=function() {
 	
   }else{
     // this requires jquery
-    jp4obj = $("#idCameraImage_div").jp4({ip:img_addr,port:img_port,width:document.getElementById("idDivCameraImage").offsetWidth,fast:true,lowres:1,note:true});
+    //jp4obj = $("#idCameraImage_div").jp4({ip:img_addr,port:img_port,width:document.getElementById("idDivCameraImage").offsetWidth,fast:true,lowres:1,note:true});
+      jp4obj = $("#idCameraImage_div").jp4({src:"http://"+img_addr+":"+img_port+"/img",width:document.getElementById("idDivCameraImage").offsetWidth,fast:true,lowres:1,note:true});
   }
   
   document.getElementById("idImageLink").href= gRequests.shadowImage.src;

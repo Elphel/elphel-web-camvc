@@ -378,6 +378,7 @@ function requestsNextState(success) {
          gRequests.sendHttpReq();     /// Will trigger either requestsNextState(true) or requestsNextState(false)
       break;
       case COMM_STATE_IMG:
+         //console.log("Getting new image @ "+Date.now()/1000);
          gRequests.getImage();
 /// start image loading, onLoad/timeout  should trigger either requestsNextState(true) or requestsNextState(false)
         break;
